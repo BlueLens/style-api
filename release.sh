@@ -3,7 +3,7 @@
 export ORG="bluelens"
 export IMAGE="style-api"
 export TAG='latest'
-export NAMESPACE="index"
+export NAMESPACE="search"
 
 docker login
 

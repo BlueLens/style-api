@@ -13,20 +13,20 @@ options = {
 }
 log = Logging(options, tag='style-api:Products')
 
-class Products(object):
+class Feeds(object):
   def __init__(self):
     super().__init__()
 
   @staticmethod
-  def get_products(file):
+  def get_feeds():
     search = Search(log)
     res = GetProductsResponse()
 
     try:
-      products = search.search_imgage(file)
+      # products = search.search_imgage(file)
 
       res.message = 'Successful'
-      res.data = products
+      # res.data = products
 
       response_status = 200
     except Exception as e:

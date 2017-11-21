@@ -1,18 +1,12 @@
-FROM python:3-alpine
+FROM bluelens/tensorflow:1.3.0-py3
 
+RUN mkdir -p /opt/app/model
 RUN mkdir -p /usr/src/app
 
 WORKDIR /usr/src/app
 
-#COPY . /usr/src/app
-
-#RUN apt-get install ca-certificates libffi6 libstdc++ && \
-#    apt-get install --virtual build-deps build-base libffi-dev && \
-#RUN pip install --no-cache-dir gunicorn /usr/src/app
-
-#EXPOSE 8080
-#
-#CMD ["gunicorn", "-k", "gevent", "--timeout", "200", "-b", "0.0.0.0:8080", "bl_db_product:app"]
+RUN curl https://s3.ap-northeast-2.amazonaws.com/bluelens-style-model/classification/inception_v3/classify_image_graph_def.pb -o /opt/app/model/classify_image_graph_def.pb
+ENV CLASSIFY_GRAPH=/opt/app/model/classify_image_graph_def.pb
 
 COPY requirements.txt /usr/src/app/
 

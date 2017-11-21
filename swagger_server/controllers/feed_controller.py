@@ -5,6 +5,7 @@ from typing import List, Dict
 from six import iteritems
 from ..util import deserialize_date, deserialize_datetime
 
+from orm.feeds import Feeds
 
 def get_feeds():
     """
@@ -13,4 +14,4 @@ def get_feeds():
 
     :rtype: GetFeedResponse
     """
-    return 'do some magic!'
+    return ""
