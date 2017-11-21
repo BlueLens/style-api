@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: style-api
+  namespace: search
+  labels:
+    name: style-api
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    name: style-api
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: style-api
+  namespace: search
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        role: api
+        name: style-api
+    spec:
+      containers:
+      - image: bluelens/style-api:latest
+        name: style-api
+        ports:
+        - containerPort: 8080
+          name: http-server
+        env:
+        - name: AWS_ACCESS_KEY
+          value: ""
+
