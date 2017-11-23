@@ -10,6 +10,8 @@ import tensorflow as tf
 from stylelens_feature import feature_extract
 import stylelens_search_vector
 from stylelens_search_vector.rest import ApiException
+import stylelens_product
+from stylelens_product.rest import ApiException
 from pprint import pprint
 
 from swagger_server.models.boxes_array import BoxesArray
@@ -96,7 +98,12 @@ class Search:
     # self.log.debug(obj_ids)
     prod_ids = self.get_product_ids(obj_ids)
     # self.log.debug(prod_ids)
-    products_info = self.get_products_info(prod_ids)
+
+    # Using MongoDB
+    products_info = self.get_producs_from_db(prod_ids)
+
+    # Using Redis
+    # products_info = self.get_products_info(prod_ids)
     return products_info
 
     # response_products = []
@@ -110,6 +117,18 @@ class Search:
     # query_feature_elapsed_time = time.time() - query_feature_start_time
     # self.log.info('query_feature time: ' + str(query_feature_elapsed_time))
     # return response_products
+
+  def get_producs_from_db(self, ids):
+    product_api = stylelens_product.ProductApi()
+    try:
+      api_response = product_api.get_products_by_ids(ids)
+    except ApiException as e:
+      self.log.error("Exception when calling ProductApi->get_products_by_ids: %s\n" % e)
+
+    products_info = []
+    for p in api_response.data:
+      products_info.append(p.to_dict())
+    return products_info
 
   def get_object_ids(self, ids):
     obj_ids = []
