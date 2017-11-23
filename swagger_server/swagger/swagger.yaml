@@ -64,6 +64,36 @@ paths:
         400:
           description: "Invalid input"
       x-swagger-router-controller: "swagger_server.controllers.product_controller"
+  /products/hosts/{hostCode}/products/{productNo}:
+    get:
+      tags:
+      - "product"
+      summary: "Get Product by hostCode and productNo"
+      description: "Returns Product belongs to a Host and productNo"
+      operationId: "get_product_by_hostcode_and_product_no"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "hostCode"
+        in: "path"
+        description: ""
+        required: true
+        type: "string"
+      - name: "productNo"
+        in: "path"
+        description: ""
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/GetProductResponse"
+        400:
+          description: "Invalid input supplied"
+        404:
+          description: "Host or productNo not found"
+      x-swagger-router-controller: "swagger_server.controllers.product_controller"
   /objects:
     post:
       tags:
@@ -142,6 +172,8 @@ definitions:
       discount_rate:
         type: "integer"
         format: "int32"
+      version:
+        type: "string"
   ProductsArray:
     type: "array"
     items:
@@ -170,6 +202,13 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/Product"
+  GetProductResponse:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+      data:
+        $ref: "#/definitions/Product"
   GetFeedResponse:
     type: "object"
     properties:

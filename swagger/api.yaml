@@ -60,6 +60,35 @@ paths:
             $ref: '#/definitions/GetProductsResponse'
         400:
           description: Invalid input
+  /products/hosts/{hostCode}/products/{productNo}:
+    get:
+      tags:
+      - product
+      summary: "Get Product by hostCode and productNo"
+      description: "Returns Product belongs to a Host and productNo"
+      operationId: "getProductByHostcodeAndProductNo"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "hostCode"
+        in: "path"
+        description: ""
+        required: true
+        type: string
+      - name: "productNo"
+        in: "path"
+        description: ""
+        required: true
+        type: string
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/GetProductResponse"
+        400:
+          description: "Invalid input supplied"
+        404:
+          description: "Host or productNo not found"
 
   /objects:
     post:
@@ -139,6 +168,8 @@ definitions:
       discount_rate:
         type: integer
         format: int32
+      version:
+        type: string
 
   ProductsArray:
     type: array
@@ -171,6 +202,14 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Product'
+
+  GetProductResponse:
+    type: object
+    properties:
+      message:
+        type: string
+      data:
+        $ref: "#/definitions/Product"
 
   GetFeedResponse:
     type: object

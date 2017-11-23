@@ -8,6 +8,7 @@ from .boxes_array import BoxesArray
 from .get_feed_response import GetFeedResponse
 from .get_objects_response import GetObjectsResponse
 from .get_objects_response_data import GetObjectsResponseData
+from .get_product_response import GetProductResponse
 from .get_products_response import GetProductsResponse
 from .product import Product
 from .products_array import ProductsArray

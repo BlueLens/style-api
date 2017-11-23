@@ -113,9 +113,13 @@ class Search:
 
   def get_object_ids(self, ids):
     obj_ids = []
+    count = 0
     for i in ids:
+      if count == 5:
+        break
       id = rconn.lindex(REDIS_KEY_OBJECT_LIST, i - 1)
       obj_ids.append(id.decode('utf-8'))
+      count = count + 1
     # self.log.debug(obj_ids)
     return obj_ids
 
@@ -168,7 +172,10 @@ class Search:
 
     # with tf.gfile.GFile(file, 'rb') as fid:
     #   image_data = fid.read()
+    local_start_time = time.time()
     objects = stub.GetObjects(object_detect_pb2.DetectRequest(file_data=image_data))
+    elapsed_time = time.time() - local_start_time
+    self.log.info('local_get_objects time: ' + str(elapsed_time))
 
     boxes_array = []
     feature = []
@@ -176,16 +183,16 @@ class Search:
       box_object = BoxObject()
       box_object.class_name = object.class_name
       box_object.class_code = object.class_code
-      self.log.debug(object.class_name)
-      self.log.debug(object.class_code)
-      self.log.debug(object.location)
+      # self.log.debug(object.class_name)
+      # self.log.debug(object.class_code)
+      # self.log.debug(object.location)
       box = []
       box.append(object.location.left)
       box.append(object.location.right)
       box.append(object.location.top)
       box.append(object.location.bottom)
       box_object.box = box
-      self.log.debug(box)
+      # self.log.debug(box)
       arr = np.fromstring(object.feature, dtype=np.float32)
       feature = arr
       boxes_array.append(box_object)
@@ -193,7 +200,10 @@ class Search:
     if len(boxes_array) == 0:
       self.log.debug('Can not detect object')
     elif len(boxes_array) == 1:
+      local_start_time = time.time()
       products = self.query_feature(feature.tolist())
+      elapsed_time = time.time() - local_start_time
+      self.log.info('query_feature time: ' + str(elapsed_time))
       boxes_array[0].products = products
 
     elapsed_time = time.time() - start_time

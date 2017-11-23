@@ -18,3 +18,16 @@ def get_products(file=None):
     :rtype: GetProductsResponse
     """
     return Products.get_products(file)
+
+def get_product_by_hostcode_and_product_no(hostCode, productNo):
+    """
+    Get Product by hostCode and productNo
+    Returns Product belongs to a Host and productNo
+    :param hostCode:
+    :type hostCode: str
+    :param productNo:
+    :type productNo: str
+
+    :rtype: GetProductResponse
+    """
+    return Products.get_product_by_host_code_and_product_no(hostCode, productNo)

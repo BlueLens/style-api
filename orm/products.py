@@ -3,7 +3,11 @@ import os
 import time
 from bluelens_log import Logging
 from swagger_server.models.get_products_response import GetProductsResponse
+from swagger_server.models.get_product_response import GetProductResponse
+from swagger_server.models.product import Product
 from .search import Search
+import stylelens_product
+from stylelens_product.rest import ApiException
 
 REDIS_SERVER = os.environ['REDIS_SERVER']
 REDIS_PASSWORD = os.environ['REDIS_PASSWORD']
@@ -39,4 +43,24 @@ class Products(object):
     log.info('get_products time: ' + str(elapsed_time))
     return res, response_status
 
+  @staticmethod
+  def get_product_by_host_code_and_product_no(host_code, product_no):
+    log.info('get_product_by_host_code_and_product_no')
+    start_time = time.time()
+    product_api = stylelens_product.ProductApi()
+    res = GetProductResponse()
+    product = Product()
 
+    try:
+      api_res = product_api.get_products_by_hostcode_and_product_no(host_code, product_no)
+      res.data = product.from_dict(api_res.data.to_dict())
+      res.message = 'Successful'
+      response_status = 200
+
+    except Exception as e:
+      log.error(str(e))
+      response_status = 400
+
+    elapsed_time = time.time() - start_time
+    log.info('get_product_by_host_code time: ' + str(elapsed_time))
+    return res, response_status
