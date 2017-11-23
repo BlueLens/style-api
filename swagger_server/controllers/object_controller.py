@@ -5,6 +5,7 @@ from typing import List, Dict
 from six import iteritems
 from ..util import deserialize_date, deserialize_datetime
 
+from orm.objects import Objects
 
 def get_objects(file=None):
     """
@@ -15,4 +16,4 @@ def get_objects(file=None):
 
     :rtype: GetObjectsResponse
     """
-    return 'do some magic!'
+    return Objects.get_objects(file)

@@ -1,5 +1,6 @@
 
 import os
+import time
 from bluelens_log import Logging
 from swagger_server.models.get_products_response import GetProductsResponse
 from .search import Search
@@ -21,9 +22,10 @@ class Products(object):
   def get_products(file):
     search = Search(log)
     res = GetProductsResponse()
+    start_time = time.time()
 
     try:
-      products = search.search_imgage(file)
+      products = search.search_image(file)
 
       res.message = 'Successful'
       res.data = products
@@ -33,6 +35,8 @@ class Products(object):
       log.error(str(e))
       response_status = 400
 
+    elapsed_time = time.time() - start_time
+    log.info('get_products time: ' + str(elapsed_time))
     return res, response_status
 
 

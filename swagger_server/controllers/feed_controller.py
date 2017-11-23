@@ -14,4 +14,4 @@ def get_feeds():
 
     :rtype: GetFeedResponse
     """
-    return ""
+    return Feeds.get_feeds()

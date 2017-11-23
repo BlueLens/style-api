@@ -1,8 +1,8 @@
 
 import os
 from bluelens_log import Logging
-from swagger_server.models.get_products_response import GetProductsResponse
-from .search import Search
+from swagger_server.models.get_feed_response import GetFeedResponse
+from .feed import Feed
 
 REDIS_SERVER = os.environ['REDIS_SERVER']
 REDIS_PASSWORD = os.environ['REDIS_PASSWORD']
@@ -19,14 +19,13 @@ class Feeds(object):
 
   @staticmethod
   def get_feeds():
-    search = Search(log)
-    res = GetProductsResponse()
+    feed = Feed(log)
+    res = GetFeedResponse()
 
     try:
-      # products = search.search_imgage(file)
-
+      feeds = feed.feeds()
       res.message = 'Successful'
-      # res.data = products
+      res.data = feeds
 
       response_status = 200
     except Exception as e:

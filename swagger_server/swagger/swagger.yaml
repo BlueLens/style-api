@@ -166,8 +166,10 @@ definitions:
         type: "string"
       class_name:
         type: "string"
-      images:
-        $ref: "#/definitions/ProductsArray"
+      products:
+        type: "array"
+        items:
+          $ref: "#/definitions/Product"
   GetFeedResponse:
     type: "object"
     properties:
