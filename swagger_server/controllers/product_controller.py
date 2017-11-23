@@ -31,3 +31,14 @@ def get_product_by_hostcode_and_product_no(hostCode, productNo):
     :rtype: GetProductResponse
     """
     return Products.get_product_by_host_code_and_product_no(hostCode, productNo)
+
+def get_product_by_id(productId):
+    """
+    Find Product by ID
+    Returns a single Product
+    :param productId: ID of Product to return
+    :type productId: str
+
+    :rtype: GetProductResponse
+    """
+    return Products.get_product_by_id(productId)

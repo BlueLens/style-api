@@ -26,7 +26,7 @@ redis==2.10.6
 requests==2.18.4
 six==1.11.0
 stylelens-feature==1.0.4
-stylelens-product==1.0.7
+stylelens-product==1.0.8
 stylelens-search-vector==1.0.2
 swagger-spec-validator==2.1.0
 tensorflow==1.3.0

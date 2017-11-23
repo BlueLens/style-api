@@ -99,11 +99,12 @@ class Search:
     prod_ids = self.get_product_ids(obj_ids)
     # self.log.debug(prod_ids)
 
-    # Using MongoDB
-    products_info = self.get_producs_from_db(prod_ids)
-
-    # Using Redis
-    # products_info = self.get_products_info(prod_ids)
+    if len(res_vector) > 5:
+      # Using MongoDB
+      products_info = self.get_producs_from_db(prod_ids)
+    else:
+      # Using Redis
+      products_info = self.get_products_info(prod_ids)
     return products_info
 
     # response_products = []
@@ -132,13 +133,9 @@ class Search:
 
   def get_object_ids(self, ids):
     obj_ids = []
-    count = 0
     for i in ids:
-      if count == 5:
-        break
       id = rconn.lindex(REDIS_KEY_OBJECT_LIST, i - 1)
       obj_ids.append(id.decode('utf-8'))
-      count = count + 1
     # self.log.debug(obj_ids)
     return obj_ids
 

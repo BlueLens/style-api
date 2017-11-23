@@ -22,6 +22,16 @@ class TestProductController(BaseTestCase):
                                     method='GET')
         self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
 
+    def test_get_product_by_id(self):
+        """
+        Test case for get_product_by_id
+
+        Find Product by ID
+        """
+        response = self.client.open('//products/{productId}'.format(productId='productId_example'),
+                                    method='GET')
+        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+
     def test_get_products(self):
         """
         Test case for get_products

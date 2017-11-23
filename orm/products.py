@@ -64,3 +64,23 @@ class Products(object):
     elapsed_time = time.time() - start_time
     log.info('get_product_by_host_code time: ' + str(elapsed_time))
     return res, response_status
+
+  @staticmethod
+  def get_product_by_id(product_id):
+    log.info('get_product_by_id')
+    start_time = time.time()
+    product_api = stylelens_product.ProductApi()
+    res = GetProductResponse()
+    product = Product()
+
+    try:
+      api_res = product_api.get_product_by_id(product_id)
+      res.data = product.from_dict(api_res.data.to_dict())
+      res.message = 'Successful'
+      response_status = 200
+
+    except Exception as e:
+      log.error(str(e))
+      response_status = 400
+
+    return res, response_status
