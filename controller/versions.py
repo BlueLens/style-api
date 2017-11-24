@@ -1,5 +1,5 @@
 from bson.objectid import ObjectId
-from orm.database import DataBase
+from controller.database import DataBase
 
 from swagger_server.models.version import Version
 from swagger_server.models.add_version_response import AddVersionResponse

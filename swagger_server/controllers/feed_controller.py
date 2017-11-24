@@ -5,13 +5,13 @@ from typing import List, Dict
 from six import iteritems
 from ..util import deserialize_date, deserialize_datetime
 
-from orm.feeds import Feeds
+from controller.feeds import Feeds
 
-def get_feeds():
+def get_feeds(offset=None, limit=None):
     """
     
     Returns Main Feeds
 
     :rtype: GetFeedResponse
     """
-    return Feeds.get_feeds()
+    return Feeds.get_feeds(offset=offset, limit=limit)

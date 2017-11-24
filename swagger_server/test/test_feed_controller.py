@@ -17,8 +17,11 @@ class TestFeedController(BaseTestCase):
 
         
         """
+        query_string = [('offset', 56),
+                        ('limit', 56)]
         response = self.client.open('//feeds',
-                                    method='GET')
+                                    method='GET',
+                                    query_string=query_string)
         self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
 
 

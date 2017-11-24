@@ -23,10 +23,10 @@ class Feed:
     log.info('init')
     self.log = log
 
-  def feeds(self):
+  def feeds(self, offset=None, limit=None):
 
     feeds = []
-    for i in range(1, 10):
+    for i in range(offset, offset+limit):
       obj_id = rconn.lindex(REDIS_KEY_OBJECT_LIST, i)
       obj_id = obj_id.decode('utf-8')
 

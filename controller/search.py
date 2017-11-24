@@ -20,8 +20,8 @@ from swagger_server.models.box_array import BoxArray
 from swagger_server.models.product import Product
 
 import grpc
-from orm import object_detect_pb2
-from orm import object_detect_pb2_grpc
+from controller import object_detect_pb2
+from controller import object_detect_pb2_grpc
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 

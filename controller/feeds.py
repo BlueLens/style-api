@@ -18,12 +18,12 @@ class Feeds(object):
     super().__init__()
 
   @staticmethod
-  def get_feeds():
+  def get_feeds(offset=None, limit=None):
     feed = Feed(log)
     res = GetFeedResponse()
 
     try:
-      feeds = feed.feeds()
+      feeds = feed.feeds(offset, limit)
       res.message = 'Successful'
       res.data = feeds
 

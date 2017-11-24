@@ -5,7 +5,7 @@ from typing import List, Dict
 from six import iteritems
 from ..util import deserialize_date, deserialize_datetime
 
-from orm.products import Products
+from controller.products import Products
 
 
 def get_products(file=None):
