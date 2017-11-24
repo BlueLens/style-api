@@ -101,6 +101,37 @@ paths:
         404:
           description: "Product not found"
       x-swagger-router-controller: "swagger_server.controllers.product_controller"
+  /products/images/{imageId}/objects/{objectId}:
+    get:
+      tags:
+      - "product"
+      summary: "Get Products by imageId and objectId"
+      description: "Returns Products belongs to a imageId and objectId"
+      operationId: "get_products_by_image_id_and_object_id"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "imageId"
+        in: "path"
+        description: ""
+        required: true
+        type: "string"
+      - name: "objectId"
+        in: "path"
+        description: ""
+        required: true
+        type: "integer"
+        format: "int32"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/GetProductsResponse"
+        400:
+          description: "Invalid input supplied"
+        404:
+          description: "imageId or objectId not found"
+      x-swagger-router-controller: "swagger_server.controllers.product_controller"
   /products/hosts/{hostCode}/products/{productNo}:
     get:
       tags:
@@ -284,6 +315,8 @@ definitions:
     properties:
       boxes:
         $ref: "#/definitions/BoxesArray"
+      image_id:
+        type: "string"
 externalDocs:
   description: "Find out more about BlueLens"
   url: "http://bluelens.io"

@@ -44,6 +44,30 @@ class Products(object):
     return res, response_status
 
   @staticmethod
+  def get_products_by_image_id_and_object_id(image_id, object_id):
+    log.info('get_product_by_image_id_and_object_id')
+    start_time = time.time()
+    product_api = stylelens_product.ProductApi()
+    res = GetProductsResponse()
+
+    try:
+      api_res = product_api.get_products_by_image_id_and_object_id(image_id, object_id)
+      res.message = 'Successful'
+      products = []
+      for p in api_res.data:
+        products.append(p.to_dict())
+      res.data = products
+      response_status = 200
+
+    except Exception as e:
+      log.error(str(e))
+      response_status = 400
+
+    elapsed_time = time.time() - start_time
+    log.info('get_products_by_image_id_and_object_id time: ' + str(elapsed_time))
+    return res, response_status
+
+  @staticmethod
   def get_product_by_host_code_and_product_no(host_code, product_no):
     log.info('get_product_by_host_code_and_product_no')
     start_time = time.time()
@@ -62,7 +86,7 @@ class Products(object):
       response_status = 400
 
     elapsed_time = time.time() - start_time
-    log.info('get_product_by_host_code time: ' + str(elapsed_time))
+    log.info('get_product_by_host_code_and_product_no time: ' + str(elapsed_time))
     return res, response_status
 
   @staticmethod

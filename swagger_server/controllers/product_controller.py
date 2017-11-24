@@ -19,6 +19,19 @@ def get_products(file=None):
     """
     return Products.get_products(file)
 
+def get_products_by_image_id_and_object_id(imageId, objectId):
+    """
+    Get Products by imageId and objectId
+    Returns Products belongs to a imageId and objectId
+    :param imageId:
+    :type imageId: str
+    :param objectId:
+    :type objectId: int
+
+    :rtype: GetProductsResponse
+    """
+    return Products.get_products_by_image_id_and_object_id(imageId, objectId)
+
 def get_product_by_hostcode_and_product_no(hostCode, productNo):
     """
     Get Product by hostCode and productNo

@@ -45,6 +45,16 @@ class TestProductController(BaseTestCase):
                                     content_type='multipart/form-data')
         self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
 
+    def test_get_products_by_image_id_and_object_id(self):
+        """
+        Test case for get_products_by_image_id_and_object_id
+
+        Get Products by imageId and objectId
+        """
+        response = self.client.open('//products/images/{imageId}/objects/{objectId}'.format(imageId='imageId_example', objectId=56),
+                                    method='GET')
+        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+
 
 if __name__ == '__main__':
     import unittest
