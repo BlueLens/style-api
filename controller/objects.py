@@ -73,3 +73,22 @@ class Objects(object):
         response_status = 400
 
       return res, response_status
+
+  @staticmethod
+  def get_objects_by_product_id(product_id):
+    search = Search(log)
+    res = GetObjectsResponse()
+
+    try:
+      res_data = GetObjectsResponseData()
+      boxes = search.get_objects_by_product_id(product_id)
+      res_data.boxes = boxes
+      res.message = "Successful"
+      res.data = res_data
+      response_status = 200
+
+    except Exception as e:
+      log.error(str(e))
+      response_status = 400
+
+    return res, response_status

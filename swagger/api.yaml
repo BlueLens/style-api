@@ -50,29 +50,41 @@ paths:
         404:
           description: "Feeds not found"
   /products:
-    post:
+    get:
       tags:
-      - "product"
-      summary: Query to search products
-      description: ''
-      operationId: getProducts
-      consumes:
-      - "multipart/form-data"
+      - product
+      summary: "Get Products by productId"
+      description: "Returns similar Products with productId"
+      operationId: "getProducts"
       produces:
       - "application/json"
       parameters:
-      - name: "file"
-        in: "formData"
-        description: "Image file to upload (only support jpg format yet)"
+      - name: "productId"
+        in: "query"
+        description: ""
+        required: true
+        type: string
+      - name: "offset"
+        in: "query"
+        description: ""
         required: false
-        type: "file"
+        type: integer
+        format: int32
+      - name: "limit"
+        in: "query"
+        description: ""
+        required: false
+        type: integer
+        format: int32
       responses:
         200:
-          description: successful operation
+          description: "successful operation"
           schema:
-            $ref: '#/definitions/GetProductsResponse'
+            $ref: "#/definitions/GetProductsResponse"
         400:
-          description: Invalid input
+          description: "Invalid input supplied"
+        404:
+          description: "imageId or objectId not found"
   /products/{productId}:
     get:
       tags:
@@ -97,6 +109,31 @@ paths:
           description: "Invalid ID supplied"
         404:
           description: "Product not found"
+  /products/images:
+    get:
+      tags:
+      - "product"
+      summary: Query to search products
+      description: ''
+      operationId: getProductsByImageFile
+      consumes:
+      - "multipart/form-data"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "file"
+        in: "formData"
+        description: "Image file to upload (only support jpg format yet)"
+        required: false
+        type: "file"
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetProductsResponse'
+        400:
+          description: Invalid input
+
   /products/images/{imageId}/objects/{objectId}:
     get:
       tags:
@@ -175,6 +212,29 @@ paths:
         description: "Image file to upload (only support jpg format yet)"
         required: false
         type: "file"
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetObjectsResponse'
+        400:
+          description: Invalid input
+
+  /objects/products/{productId}:
+    get:
+      tags:
+      - object
+      summary: Query to search multiple objects
+      description: ''
+      operationId: getObjectsByProductId
+      produces:
+      - "application/json"
+      parameters:
+      - name: productId
+        in: "path"
+        description: ""
+        required: true
+        type: string
       responses:
         200:
           description: successful operation
@@ -266,6 +326,9 @@ definitions:
         type: string
       class_name:
         type: string
+      score:
+        type: number
+        format: float
       products:
         type: array
         items:

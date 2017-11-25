@@ -2,10 +2,12 @@ import time
 
 from PIL import Image
 import numpy as np
+import io
 import os
 import uuid
 import redis
 import pickle
+import urllib.request
 import tensorflow as tf
 from stylelens_feature import feature_extract
 import stylelens_search_vector
@@ -48,7 +50,7 @@ class Search:
     self.vector_search_client = stylelens_search_vector.SearchApi()
     self.log = log
 
-  def search_image(self, image_file):
+  def search_image_file(self, image_file):
 
     start_time = time.time()
     if image_file and self.allowed_file(image_file.filename):
@@ -74,10 +76,26 @@ class Search:
       self.log.info('search_image time: ' + str(elapsed_time))
       return self.query_feature(feature.tolist())
 
-  def query_feature(self, vector):
+  def search_image_data(self, image_data, limit):
+
+    start_time = time.time()
+    im = Image.open(io.BytesIO(image_data))
+    size = 300, 300
+    im.thumbnail(size, Image.ANTIALIAS)
+    # im.show()
+    file_name = str(uuid.uuid4()) + '.jpg'
+    im.save(file_name)
+    feature = self.extract_feature(file_name)
+    print(feature.dtype)
+    elapsed_time = time.time() - start_time
+    self.log.info('search_image time: ' + str(elapsed_time))
+    return self.query_feature(feature.tolist(), limit)
+
+  def query_feature(self, vector, limit=5):
     query_feature_start_time = time.time()
     body = stylelens_search_vector.VectorSearchRequest() # VectorSearchRequest |
     body.vector = vector
+    body.candidate = limit
 
     try:
       # Query to search vector
@@ -159,7 +177,6 @@ class Search:
 
   def extract_feature(self, file):
     feature = self.image_feature.extract_feature(file)
-    # print(feature)
     return feature
 
   def get_product_info(self, index):
@@ -181,7 +198,7 @@ class Search:
     # self.log.info('get_product_info time: ' + str(elapsed_time))
     return product
 
-  def get_objects(self, image_data):
+  def get_objects(self, image_data, products_limit=5):
     start_time = time.time()
     channel = grpc.insecure_channel(OD_HOST + ':' + OD_PORT)
     stub = object_detect_pb2_grpc.DetectStub(channel)
@@ -195,10 +212,21 @@ class Search:
 
     boxes_array = []
     feature = []
+    best_score = -1
+    best_score_index = 0
+    i = 0
     for object in objects:
       box_object = BoxObject()
       box_object.class_name = object.class_name
       box_object.class_code = object.class_code
+      box_object.score = object.score
+
+      if best_score_index < object.score:
+        best_score_index = object.score
+        best_score = object.score
+        best_score_index = i
+        arr = np.fromstring(object.feature, dtype=np.float32)
+        feature = arr
       # self.log.debug(object.class_name)
       # self.log.debug(object.class_code)
       # self.log.debug(object.location)
@@ -209,19 +237,52 @@ class Search:
       box.append(object.location.bottom)
       box_object.box = box
       # self.log.debug(box)
-      arr = np.fromstring(object.feature, dtype=np.float32)
-      feature = arr
       boxes_array.append(box_object)
+      i = i + 1
 
-    if len(boxes_array) == 0:
-      self.log.debug('Can not detect object')
-    elif len(boxes_array) == 1:
-      local_start_time = time.time()
-      products = self.query_feature(feature.tolist())
-      elapsed_time = time.time() - local_start_time
-      self.log.info('query_feature time: ' + str(elapsed_time))
-      boxes_array[0].products = products
+    if best_score == -1:
+      box_object = BoxObject()
+      box_object.class_name = 'na'
+      box_object.class_code = 'na'
+      box_object.score = '-1'
+      box_object.box = [-1, -1, -1, -1]
+      boxes_array.append(box_object)
+      products = self.search_image_data(image_data, products_limit)
+    else:
+      products = self.query_feature(feature.tolist(), products_limit)
+
+    local_start_time = time.time()
+    elapsed_time = time.time() - local_start_time
+    self.log.info('query_feature time: ' + str(elapsed_time))
+    boxes_array[best_score_index].products = products
 
     elapsed_time = time.time() - start_time
     self.log.info('get_objects time: ' + str(elapsed_time))
     return boxes_array
+
+  def get_objects_by_product_id(self, product_id, products_limit):
+    product = rconn.hget(REDIS_PRODUCT_HASH, product_id)
+    product = pickle.loads(product)
+    try:
+      f = urllib.request.urlopen(product['main_image_mobile_full'])
+    except Exception as e:
+      self.log.error(str(e))
+    image_data = f.fp.read()
+    boxes = self.get_objects(image_data, products_limit)
+    return boxes
+
+  def get_products_by_product_id(self, product_id, offset=0, limit=5):
+    product = rconn.hget(REDIS_PRODUCT_HASH, product_id)
+    product = pickle.loads(product)
+    try:
+      f = urllib.request.urlopen(product['main_image_mobile_full'])
+    except Exception as e:
+      self.log.error(str(e))
+    image_data = f.fp.read()
+    boxes = self.get_objects(image_data, limit)
+
+    for box in boxes:
+      if box.products:
+        return box.products
+    return {}
+

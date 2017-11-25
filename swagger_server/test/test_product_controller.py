@@ -36,11 +36,25 @@ class TestProductController(BaseTestCase):
         """
         Test case for get_products
 
+        Get Products by productId
+        """
+        query_string = [('productId', 'productId_example'),
+                        ('offset', 56),
+                        ('limit', 56)]
+        response = self.client.open('//products',
+                                    method='GET',
+                                    query_string=query_string)
+        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+
+    def test_get_products_by_image_file(self):
+        """
+        Test case for get_products_by_image_file
+
         Query to search products
         """
         data = dict(file=(BytesIO(b'some file data'), 'file.txt'))
-        response = self.client.open('//products',
-                                    method='POST',
+        response = self.client.open('//products/images',
+                                    method='GET',
                                     data=data,
                                     content_type='multipart/form-data')
         self.assert200(response, "Response body is : " + response.data.decode('utf-8'))

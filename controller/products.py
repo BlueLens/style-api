@@ -9,6 +9,8 @@ from .search import Search
 import stylelens_product
 from stylelens_product.rest import ApiException
 
+from .search import Search
+
 REDIS_SERVER = os.environ['REDIS_SERVER']
 REDIS_PASSWORD = os.environ['REDIS_PASSWORD']
 
@@ -23,13 +25,34 @@ class Products(object):
     super().__init__()
 
   @staticmethod
-  def get_products(file):
+  def get_products(product_id, offset, limit):
+    log.info('get_products')
+    start_time = time.time()
+    search = Search(log)
+    res = GetProductsResponse()
+
+    try:
+      products = search.get_products_by_product_id(product_id, offset, limit)
+      res.data = products
+      res.message = 'Successful'
+      response_status = 200
+
+    except Exception as e:
+      log.error(str(e))
+      response_status = 400
+
+    elapsed_time = time.time() - start_time
+    log.info('get_products time: ' + str(elapsed_time))
+    return res, response_status
+
+  @staticmethod
+  def get_products_by_image_file(file):
     search = Search(log)
     res = GetProductsResponse()
     start_time = time.time()
 
     try:
-      products = search.search_image(file)
+      products = search.search_image_file(file)
 
       res.message = 'Successful'
       res.data = products
@@ -49,6 +72,8 @@ class Products(object):
     start_time = time.time()
     product_api = stylelens_product.ProductApi()
     res = GetProductsResponse()
+    log.debug(image_id)
+    log.debug(object_id)
 
     try:
       api_res = product_api.get_products_by_image_id_and_object_id(image_id, object_id)

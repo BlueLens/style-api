@@ -7,17 +7,32 @@ from ..util import deserialize_date, deserialize_datetime
 
 from controller.products import Products
 
-
-def get_products(file=None):
+def get_products_by_image_file(file=None):
     """
     Query to search products
-    
+
     :param file: Image file to upload (only support jpg format yet)
     :type file: werkzeug.datastructures.FileStorage
 
     :rtype: GetProductsResponse
     """
-    return Products.get_products(file)
+    return 'do some magic!'
+    return Products.get_products_by_image_file(file)
+
+def get_products(productId, offset=None, limit=None):
+    """
+    Get Products by productId
+    Returns similar Products with productId
+    :param productId:
+    :type productId: str
+    :param offset:
+    :type offset: int
+    :param limit:
+    :type limit: int
+
+    :rtype: GetProductsResponse
+    """
+    return Products.get_products(productId, offset, limit)
 
 def get_products_by_image_id_and_object_id(imageId, objectId):
     """

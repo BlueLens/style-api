@@ -17,3 +17,14 @@ def get_objects(file=None):
     :rtype: GetObjectsResponse
     """
     return Objects.get_objects(file)
+
+def get_objects_by_product_id(productId):
+    """
+    Query to search multiple objects
+
+    :param productId:
+    :type productId: str
+
+    :rtype: GetObjectsResponse
+    """
+    return Objects.get_objects_by_product_id(productId)

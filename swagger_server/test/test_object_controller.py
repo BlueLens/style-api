@@ -24,6 +24,16 @@ class TestObjectController(BaseTestCase):
                                     content_type='multipart/form-data')
         self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
 
+    def test_get_objects_by_product_id(self):
+        """
+        Test case for get_objects_by_product_id
+
+        Query to search multiple objects
+        """
+        response = self.client.open('//objects/products/{productId}'.format(productId='productId_example'),
+                                    method='GET')
+        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+
 
 if __name__ == '__main__':
     import unittest
