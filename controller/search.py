@@ -260,7 +260,7 @@ class Search:
     self.log.info('get_objects time: ' + str(elapsed_time))
     return boxes_array
 
-  def get_objects_by_product_id(self, product_id, products_limit):
+  def get_objects_by_product_id(self, product_id, products_limit=5):
     product = rconn.hget(REDIS_PRODUCT_HASH, product_id)
     product = pickle.loads(product)
     try:
