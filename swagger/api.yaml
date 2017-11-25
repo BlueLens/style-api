@@ -198,10 +198,10 @@ paths:
   /objects:
     post:
       tags:
-      - object
-      summary: Query to search multiple objects
+      - "object"
+      summary: Query to search objects and products
       description: ''
-      operationId: getObjects
+      operationId: getObjectsByImageFile
       consumes:
       - "multipart/form-data"
       produces:
@@ -210,7 +210,7 @@ paths:
       - name: "file"
         in: "formData"
         description: "Image file to upload (only support jpg format yet)"
-        required: false
+        required: true
         type: "file"
       responses:
         200:

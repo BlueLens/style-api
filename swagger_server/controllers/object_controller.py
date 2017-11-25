@@ -7,16 +7,16 @@ from ..util import deserialize_date, deserialize_datetime
 
 from controller.objects import Objects
 
-def get_objects(file=None):
+def get_objects_by_image_file(file):
     """
-    Query to search multiple objects
-    
+    Query to search objects and products
+
     :param file: Image file to upload (only support jpg format yet)
     :type file: werkzeug.datastructures.FileStorage
 
     :rtype: GetObjectsResponse
     """
-    return Objects.get_objects(file)
+    return Objects.get_objects_by_image_file(file)
 
 def get_objects_by_product_id(productId):
     """

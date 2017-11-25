@@ -1,10 +1,13 @@
 
 import os
 from PIL import Image
+import uuid
 from bluelens_log import Logging
 from swagger_server.models.get_objects_response import GetObjectsResponse
 from swagger_server.models.get_objects_response_data import GetObjectsResponseData
+import stylelens_product
 from .search import Search
+from util import utils
 
 REDIS_SERVER = os.environ['REDIS_SERVER']
 REDIS_PASSWORD = os.environ['REDIS_PASSWORD']
@@ -28,7 +31,7 @@ class Objects(object):
     super().__init__()
 
   @staticmethod
-  def get_objects(file):
+  def get_objects_by_image_file(file):
     search = Search(log)
     res = GetObjectsResponse()
 
@@ -61,9 +64,18 @@ class Objects(object):
         else:
           im.save(TMP_IMG)
 
+        product_api = stylelens_product.ImageApi()
+        image = stylelens_product.Image() # Product | Product object that needs to be added to the db.
+        image_url = utils.save_image_to_storage(str(uuid.uuid4()), 'camera', TMP_IMG)
+        image.url = image_url
+        api_res = product_api.add_image(image)
+        image_id = api_res.data.image_id
+
         res_data = GetObjectsResponseData()
         boxes = search.get_objects(file.stream.getvalue())
+        image.boxes = boxes
         res_data.boxes = boxes
+        res_data.image_id = image_id
         res.message = "Successful"
         res.data = res_data
         response_status = 200

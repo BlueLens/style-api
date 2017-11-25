@@ -11,11 +11,11 @@ from flask import json
 class TestObjectController(BaseTestCase):
     """ ObjectController integration test stubs """
 
-    def test_get_objects(self):
+    def test_get_objects_by_image_file(self):
         """
-        Test case for get_objects
+        Test case for get_objects_by_image_file
 
-        Query to search multiple objects
+        Query to search objects and products
         """
         data = dict(file=(BytesIO(b'some file data'), 'file.txt'))
         response = self.client.open('//objects',
