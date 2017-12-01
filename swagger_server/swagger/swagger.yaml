@@ -114,7 +114,7 @@ paths:
           description: "Product not found"
       x-swagger-router-controller: "swagger_server.controllers.product_controller"
   /products/images:
-    get:
+    post:
       tags:
       - "product"
       summary: "Query to search products"

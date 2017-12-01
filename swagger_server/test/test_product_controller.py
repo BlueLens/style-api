@@ -54,7 +54,7 @@ class TestProductController(BaseTestCase):
         """
         data = dict(file=(BytesIO(b'some file data'), 'file.txt'))
         response = self.client.open('//products/images',
-                                    method='GET',
+                                    method='POST',
                                     data=data,
                                     content_type='multipart/form-data')
         self.assert200(response, "Response body is : " + response.data.decode('utf-8'))

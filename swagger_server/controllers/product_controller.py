@@ -16,7 +16,6 @@ def get_products_by_image_file(file=None):
 
     :rtype: GetProductsResponse
     """
-    return 'do some magic!'
     return Products.get_products_by_image_file(file)
 
 def get_products(productId, offset=None, limit=None):

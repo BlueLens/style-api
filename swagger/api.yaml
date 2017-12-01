@@ -110,7 +110,7 @@ paths:
         404:
           description: "Product not found"
   /products/images:
-    get:
+    post:
       tags:
       - "product"
       summary: Query to search products

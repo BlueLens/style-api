@@ -10,8 +10,8 @@ import pickle
 import urllib.request
 import tensorflow as tf
 from stylelens_feature import feature_extract
-import stylelens_search_vector
-from stylelens_search_vector.rest import ApiException
+# import stylelens_search_vector
+# from stylelens_search_vector.rest import ApiException
 import stylelens_product
 from stylelens_product.rest import ApiException
 from pprint import pprint
@@ -24,7 +24,11 @@ from swagger_server.models.product import Product
 import grpc
 from controller import object_detect_pb2
 from controller import object_detect_pb2_grpc
+from controller import vector_search_pb2
+from controller import vector_search_pb2_grpc
 
+
+VECTOR_SIMILARITY_THRESHHOLD = 30
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 REDIS_SERVER = os.environ['REDIS_SERVER']
@@ -32,6 +36,9 @@ REDIS_PASSWORD = os.environ['REDIS_PASSWORD']
 
 OD_HOST = os.environ['OD_HOST']
 OD_PORT = os.environ['OD_PORT']
+
+SEARCH_HOST = os.environ['SEARCH_HOST']
+SEARCH_PORT = os.environ['SEARCH_PORT']
 
 REDIS_KEY_IMAGE_HASH = 'bl:image:hash'
 REDIS_KEY_IMAGE_LIST = 'bl:image:list'
@@ -47,7 +54,7 @@ class Search:
   def __init__(self, log):
     log.info('init')
     self.image_feature = feature_extract.ExtractFeature(use_gpu=True)
-    self.vector_search_client = stylelens_search_vector.SearchApi()
+    # self.vector_search_client = stylelens_search_vector.SearchApi()
     self.log = log
 
   def search_image_file(self, image_file):
@@ -92,50 +99,42 @@ class Search:
     return self.query_feature(feature.tolist(), limit)
 
   def query_feature(self, vector, limit=5):
-    query_feature_start_time = time.time()
-    body = stylelens_search_vector.VectorSearchRequest() # VectorSearchRequest |
-    body.vector = vector
-    body.candidate = limit
-
     try:
       # Query to search vector
       start_time = time.time()
-      api_response = self.vector_search_client.search_vector(body)
+      channel = grpc.insecure_channel(SEARCH_HOST + ':' + SEARCH_PORT)
+      stub = vector_search_pb2_grpc.SearchStub(channel)
+      v = np.asarray(vector, dtype=np.float32)
+      results = stub.SearchVector(vector_search_pb2.SearchRequest(vector=v.tobytes(),
+                                                                  candidate=limit))
+      # print(results)
+      # d = results.vector_d
+      # i = results.vector_i
+      distances = np.fromstring(results.vector_d, dtype=np.float32)
+      ids = np.fromstring(results.vector_i, dtype=np.int)
       elapsed_time = time.time() - start_time
       self.log.debug('vector search time: ' + str(elapsed_time))
-      pprint(api_response)
+      # pprint(api_response)
     except ApiException as e:
-      print("Exception when calling SearchApi->search_vector: %s\n" % e)
+      self.log.error("Exception when calling SearchApi->search_vector: %s\n" % e)
 
-    if api_response.data.vector is not None:
-      res_vector = api_response.data.vector
-      pprint(res_vector)
 
-    # res_vector = [1,2,3,4,5,6,7,8,9,10]
-    obj_ids = self.get_object_ids(res_vector)
-    # self.log.debug(obj_ids)
+    arr_i = []
+    i = 0
+    for d in distances:
+      if d <= VECTOR_SIMILARITY_THRESHHOLD:
+        arr_i.append(ids[i])
+
+    obj_ids = self.get_object_ids(arr_i)
     prod_ids = self.get_product_ids(obj_ids)
-    # self.log.debug(prod_ids)
 
-    if len(res_vector) > 5:
+    if len(arr_i) > 5:
       # Using MongoDB
       products_info = self.get_producs_from_db(prod_ids)
     else:
       # Using Redis
       products_info = self.get_products_info(prod_ids)
     return products_info
-
-    # response_products = []
-    # for idx in range(1, 10):
-    # # self.log.debug(products_info)
-    # # for idx in res_vector:
-    # #   self.log.debug(idx)
-    #   product_info = self.get_product_info(idx)
-    #   product_info['sub_images'] = None
-    #   response_products.append(product_info)
-    # query_feature_elapsed_time = time.time() - query_feature_start_time
-    # self.log.info('query_feature time: ' + str(query_feature_elapsed_time))
-    # return response_products
 
   def get_producs_from_db(self, ids):
     product_api = stylelens_product.ProductApi()
@@ -145,8 +144,14 @@ class Search:
       self.log.error("Exception when calling ProductApi->get_products_by_ids: %s\n" % e)
 
     products_info = []
-    for p in api_response.data:
-      products_info.append(p.to_dict())
+
+    for id in ids:
+      i = id.decode('utf-8')
+      for p in api_response.data:
+        if i == p.id:
+          products_info.append(p.to_dict())
+          break
+
     return products_info
 
   def get_object_ids(self, ids):
@@ -168,6 +173,7 @@ class Search:
     for p in products_info:
       product = pickle.loads(p)
       product['sub_images'] = None
+      product['sub_images_mobile'] = None
       products.append(product)
     return products
 
