@@ -28,7 +28,7 @@ from controller import vector_search_pb2
 from controller import vector_search_pb2_grpc
 
 
-VECTOR_SIMILARITY_THRESHHOLD = 30
+VECTOR_SIMILARITY_THRESHHOLD = 150
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 REDIS_SERVER = os.environ['REDIS_SERVER']
