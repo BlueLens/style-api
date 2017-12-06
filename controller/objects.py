@@ -6,6 +6,7 @@ from bluelens_log import Logging
 from swagger_server.models.get_objects_response import GetObjectsResponse
 from swagger_server.models.get_objects_response_data import GetObjectsResponseData
 import stylelens_product
+from swagger_server.models.product import Product
 from .search import Search
 from util import utils
 
@@ -67,13 +68,23 @@ class Objects(object):
         product_api = stylelens_product.ImageApi()
         image = stylelens_product.Image() # Product | Product object that needs to be added to the db.
         image_url = utils.save_image_to_storage(str(uuid.uuid4()), 'camera', TMP_IMG)
+        with open(TMP_IMG, 'rb') as im_f:
+          img_data = im_f.read()
+        boxes = search.get_objects(img_data)
+
+
+        for box_obj in boxes:
+          products = []
+          for prod in box_obj.products:
+            products.append(Product.from_dict(prod))
+          box_obj.products = products
+
+        image.boxes = boxes
         image.url = image_url
         api_res = product_api.add_image(image)
         image_id = api_res.data.image_id
 
         res_data = GetObjectsResponseData()
-        boxes = search.get_objects(file.stream.getvalue())
-        image.boxes = boxes
         res_data.boxes = boxes
         res_data.image_id = image_id
         res.message = "Successful"

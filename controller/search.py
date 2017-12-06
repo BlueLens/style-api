@@ -28,7 +28,7 @@ from controller import vector_search_pb2
 from controller import vector_search_pb2_grpc
 
 
-VECTOR_SIMILARITY_THRESHHOLD = 150
+VECTOR_SIMILARITY_THRESHHOLD = 450
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 REDIS_SERVER = os.environ['REDIS_SERVER']
@@ -46,6 +46,7 @@ REDIS_KEY_IMAGE_LIST = 'bl:image:list'
 REDIS_KEY_OBJECT_LIST = 'bl:object:list'
 REDIS_OBJECT_HASH = 'bl:object:hash'
 REDIS_PRODUCT_HASH = 'bl:product:hash'
+REDIS_PRODUCTS_BY_PRODUCT_HASH = 'bl:products:by:product'
 TMP_CROP_IMG_FILE = 'tmp.jpg'
 
 rconn = redis.StrictRedis(REDIS_SERVER, port=6379, password=REDIS_PASSWORD)
@@ -124,6 +125,7 @@ class Search:
     for d in distances:
       if d <= VECTOR_SIMILARITY_THRESHHOLD:
         arr_i.append(ids[i])
+        i = i+ 1
 
     obj_ids = self.get_object_ids(arr_i)
     prod_ids = self.get_product_ids(obj_ids)
@@ -159,15 +161,17 @@ class Search:
     for i in ids:
       id = rconn.lindex(REDIS_KEY_OBJECT_LIST, i - 1)
       obj_ids.append(id.decode('utf-8'))
-    # self.log.debug(obj_ids)
+    self.log.debug(obj_ids)
     return obj_ids
 
   def get_product_ids(self, ids):
+    self.log.debug('get_product_ids' + str(ids))
     product_ids = rconn.hmget(REDIS_OBJECT_HASH, ids)
     # self.log.debug(product_ids)
     return product_ids
 
   def get_products_info(self, ids):
+    self.log.debug('get_product_info' + str(ids))
     products = []
     products_info = rconn.hmget(REDIS_PRODUCT_HASH, ids)
     for p in products_info:
@@ -278,17 +282,23 @@ class Search:
     return boxes
 
   def get_products_by_product_id(self, product_id, offset=0, limit=5):
-    product = rconn.hget(REDIS_PRODUCT_HASH, product_id)
-    product = pickle.loads(product)
-    try:
-      f = urllib.request.urlopen(product['main_image_mobile_full'])
-    except Exception as e:
-      self.log.error(str(e))
-    image_data = f.fp.read()
-    boxes = self.get_objects(image_data, limit)
+    if rconn.hexists(REDIS_PRODUCTS_BY_PRODUCT_HASH, product_id):
+      products = rconn.hget(REDIS_PRODUCTS_BY_PRODUCT_HASH, product_id)
+      products = pickle.loads(products)
+      return products[offset:limit]
+    else:
+      product = rconn.hget(REDIS_PRODUCT_HASH, product_id)
+      product = pickle.loads(product)
+      try:
+        f = urllib.request.urlopen(product['main_image_mobile_full'])
+      except Exception as e:
+        self.log.error(str(e))
+      image_data = f.fp.read()
+      boxes = self.get_objects(image_data, limit)
 
-    for box in boxes:
-      if box.products:
-        return box.products
+      for box in boxes:
+        if box.products:
+          rconn.hset(REDIS_PRODUCTS_BY_PRODUCT_HASH, product_id, pickle.dumps(box.products))
+          return box.products
     return {}
 
