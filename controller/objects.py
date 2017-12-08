@@ -5,6 +5,9 @@ import uuid
 from bluelens_log import Logging
 from swagger_server.models.get_objects_response import GetObjectsResponse
 from swagger_server.models.get_objects_response_data import GetObjectsResponseData
+from swagger_server.models.get_objects_by_product_id_response import GetObjectsByProductIdResponse
+from swagger_server.models.get_objects_by_product_id_response_data import GetObjectsByProductIdResponseData
+from swagger_server.models.boxes_array import BoxesArray
 import stylelens_product
 from swagger_server.models.product import Product
 from .search import Search
@@ -100,12 +103,13 @@ class Objects(object):
   @staticmethod
   def get_objects_by_product_id(product_id):
     search = Search(log)
-    res = GetObjectsResponse()
+    res = GetObjectsByProductIdResponse()
 
     try:
-      res_data = GetObjectsResponseData()
+      res_data = GetObjectsByProductIdResponseData()
       boxes = search.get_objects_by_product_id(product_id)
-      res_data.boxes = boxes
+      res_data.product_id = product_id
+      res_data.boxes = BoxesArray.from_dict(boxes)
       res.message = "Successful"
       res.data = res_data
       response_status = 200

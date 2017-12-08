@@ -6,6 +6,8 @@ from .box_array import BoxArray
 from .box_object import BoxObject
 from .boxes_array import BoxesArray
 from .get_feed_response import GetFeedResponse
+from .get_objects_by_product_id_response import GetObjectsByProductIdResponse
+from .get_objects_by_product_id_response_data import GetObjectsByProductIdResponseData
 from .get_objects_response import GetObjectsResponse
 from .get_objects_response_data import GetObjectsResponseData
 from .get_product_response import GetProductResponse

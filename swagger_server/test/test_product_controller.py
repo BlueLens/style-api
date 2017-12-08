@@ -52,11 +52,14 @@ class TestProductController(BaseTestCase):
 
         Query to search products
         """
+        query_string = [('offset', 56),
+                        ('limit', 56)]
         data = dict(file=(BytesIO(b'some file data'), 'file.txt'))
         response = self.client.open('//products/images',
                                     method='POST',
                                     data=data,
-                                    content_type='multipart/form-data')
+                                    content_type='multipart/form-data',
+                                    query_string=query_string)
         self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
 
     def test_get_products_by_image_id_and_object_id(self):

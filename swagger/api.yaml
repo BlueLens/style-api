@@ -126,6 +126,18 @@ paths:
         description: "Image file to upload (only support jpg format yet)"
         required: false
         type: "file"
+      - name: "offset"
+        in: "query"
+        description: ""
+        required: false
+        type: integer
+        format: int32
+      - name: "limit"
+        in: "query"
+        description: ""
+        required: false
+        type: integer
+        format: int32
       responses:
         200:
           description: successful operation
@@ -239,7 +251,7 @@ paths:
         200:
           description: successful operation
           schema:
-            $ref: '#/definitions/GetObjectsResponse'
+            $ref: '#/definitions/GetObjectsByProductIdResponse'
         400:
           description: Invalid input
 
@@ -363,6 +375,19 @@ definitions:
           boxes:
             $ref: '#/definitions/BoxesArray'
           image_id:
+            type: string
+
+  GetObjectsByProductIdResponse:
+    type: object
+    properties:
+      message:
+        type: string
+      data:
+        type: object
+        properties:
+          boxes:
+            $ref: '#/definitions/BoxesArray'
+          product_id:
             type: string
 
   SearchImageResponse:

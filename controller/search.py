@@ -58,7 +58,7 @@ class Search:
     # self.vector_search_client = stylelens_search_vector.SearchApi()
     self.log = log
 
-  def search_image_file(self, image_file):
+  def search_image_file(self, image_file, offset=0, limit=5):
 
     start_time = time.time()
     if image_file and self.allowed_file(image_file.filename):
@@ -82,9 +82,9 @@ class Search:
       print(feature.dtype)
       elapsed_time = time.time() - start_time
       self.log.info('search_image time: ' + str(elapsed_time))
-      return self.query_feature(feature.tolist())
+      return self.query_feature(feature.tolist(), offset=offset, limit=limit)
 
-  def search_image_data(self, image_data, limit):
+  def search_image_data(self, image_data, offset=0, limit=10):
 
     start_time = time.time()
     im = Image.open(io.BytesIO(image_data))
@@ -97,9 +97,9 @@ class Search:
     print(feature.dtype)
     elapsed_time = time.time() - start_time
     self.log.info('search_image time: ' + str(elapsed_time))
-    return self.query_feature(feature.tolist(), limit)
+    return self.query_feature(feature.tolist(), offset, limit)
 
-  def query_feature(self, vector, limit=5):
+  def query_feature(self, vector, offset=0, limit=5):
     try:
       # Query to search vector
       start_time = time.time()
@@ -124,7 +124,10 @@ class Search:
     i = 0
     for d in distances:
       if d <= VECTOR_SIMILARITY_THRESHHOLD:
-        arr_i.append(ids[i])
+        if i < limit:
+          arr_i.append(ids[i])
+        else:
+          break
         i = i+ 1
 
     obj_ids = self.get_object_ids(arr_i)
@@ -132,18 +135,22 @@ class Search:
 
     if len(arr_i) > 5:
       # Using MongoDB
-      products_info = self.get_producs_from_db(prod_ids)
+      products_info = self.get_products_from_db(prod_ids, offset=offset, limit=limit)
     else:
       # Using Redis
-      products_info = self.get_products_info(prod_ids)
+      products_info = self.get_products_info(prod_ids, offset=offset, limit=limit)
     return products_info
 
-  def get_producs_from_db(self, ids):
+  def get_products_from_db(self, ids, offset=0, limit=5):
+    self.log.debug('get_products_from_db')
+    start_time = time.time()
     product_api = stylelens_product.ProductApi()
     try:
       api_response = product_api.get_products_by_ids(ids)
     except ApiException as e:
       self.log.error("Exception when calling ProductApi->get_products_by_ids: %s\n" % e)
+    elapsed_time = time.time() - start_time
+    self.log.debug('get_products_from_db time: ' + str(elapsed_time))
 
     products_info = []
 
@@ -170,15 +177,18 @@ class Search:
     # self.log.debug(product_ids)
     return product_ids
 
-  def get_products_info(self, ids):
+  def get_products_info(self, ids, offset=0, limit=5):
     self.log.debug('get_product_info' + str(ids))
     products = []
     products_info = rconn.hmget(REDIS_PRODUCT_HASH, ids)
+    i = 0
     for p in products_info:
-      product = pickle.loads(p)
-      product['sub_images'] = None
-      product['sub_images_mobile'] = None
-      products.append(product)
+      if i < limit:
+        product = pickle.loads(p)
+        product['sub_images'] = None
+        product['sub_images_mobile'] = None
+        products.append(product)
+      i = i + 1
     return products
 
   def allowed_file(self, filename):
@@ -208,7 +218,7 @@ class Search:
     # self.log.info('get_product_info time: ' + str(elapsed_time))
     return product
 
-  def get_objects(self, image_data, products_limit=5):
+  def get_objects(self, image_data, products_offset=0, products_limit=5):
     start_time = time.time()
     channel = grpc.insecure_channel(OD_HOST + ':' + OD_PORT)
     stub = object_detect_pb2_grpc.DetectStub(channel)
@@ -257,9 +267,9 @@ class Search:
       box_object.score = '-1'
       box_object.box = [-1, -1, -1, -1]
       boxes_array.append(box_object)
-      products = self.search_image_data(image_data, products_limit)
+      products = self.search_image_data(image_data, offset=products_offset, limit=products_limit)
     else:
-      products = self.query_feature(feature.tolist(), products_limit)
+      products = self.query_feature(feature.tolist(), offset=products_offset, limit=products_limit)
 
     local_start_time = time.time()
     elapsed_time = time.time() - local_start_time

@@ -2,6 +2,7 @@
 
 from __future__ import absolute_import
 
+from swagger_server.models.get_objects_by_product_id_response import GetObjectsByProductIdResponse
 from swagger_server.models.get_objects_response import GetObjectsResponse
 from . import BaseTestCase
 from six import BytesIO

@@ -46,13 +46,13 @@ class Products(object):
     return res, response_status
 
   @staticmethod
-  def get_products_by_image_file(file):
+  def get_products_by_image_file(file, offset=0, limit=5):
     search = Search(log)
     res = GetProductsResponse()
     start_time = time.time()
 
     try:
-      products = search.search_image_file(file)
+      products = search.search_image_file(file, offset, limit)
 
       res.message = 'Successful'
       res.data = products
