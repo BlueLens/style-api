@@ -18,7 +18,7 @@ from pprint import pprint
 
 from swagger_server.models.boxes_array import BoxesArray
 from swagger_server.models.box_object import BoxObject
-from swagger_server.models.box_array import BoxArray
+from swagger_server.models.box import Box
 from swagger_server.models.product import Product
 
 import grpc
@@ -250,11 +250,11 @@ class Search:
       # self.log.debug(object.class_name)
       # self.log.debug(object.class_code)
       # self.log.debug(object.location)
-      box = []
-      box.append(object.location.left)
-      box.append(object.location.right)
-      box.append(object.location.top)
-      box.append(object.location.bottom)
+      box = Box()
+      box.left = object.location.left
+      box.right = object.location.right
+      box.top = object.location.top
+      box.bottom = object.location.bottom
       box_object.box = box
       # self.log.debug(box)
       boxes_array.append(box_object)
@@ -265,7 +265,13 @@ class Search:
       box_object.class_name = 'na'
       box_object.class_code = 'na'
       box_object.score = '-1'
-      box_object.box = [-1, -1, -1, -1]
+
+      box = Box()
+      box.left = -1
+      box.right = -1
+      box.top = -1
+      box.bottom = -1
+      box_object.box = box
       boxes_array.append(box_object)
       products = self.search_image_data(image_data, offset=products_offset, limit=products_limit)
     else:

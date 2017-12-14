@@ -34,8 +34,8 @@ class Feed:
       product_id = product_id.decode('utf-8')
 
       product = rconn.hget(REDIS_PRODUCT_HASH, product_id)
-      # self.log.debug(product)
-      product = pickle.loads(product)
-      product['sub_images'] = None
-      feeds.append(product)
+      if product != None:
+        product = pickle.loads(product)
+        product['sub_images'] = None
+        feeds.append(product)
     return feeds

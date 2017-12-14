@@ -17,7 +17,6 @@ COPY . /usr/src/app
 ENV LANG en_US.UTF-8
 
 EXPOSE 8080
-
 ENTRYPOINT ["python3"]
 
 CMD ["-m", "swagger_server"]

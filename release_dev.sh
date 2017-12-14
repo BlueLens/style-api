@@ -2,8 +2,8 @@
 
 export ORG="bluelens"
 export IMAGE="style-api"
-export TAG='latest'
-export NAMESPACE="search"
+export TAG='dev'
+export NAMESPACE="dev"
 
 docker login
 

@@ -1,5 +1,6 @@
 
 import os
+import time
 from bluelens_log import Logging
 from swagger_server.models.get_feed_response import GetFeedResponse
 from .feed import Feed
@@ -11,7 +12,7 @@ options = {
   'REDIS_SERVER': REDIS_SERVER,
   'REDIS_PASSWORD': REDIS_PASSWORD
 }
-log = Logging(options, tag='style-api:Products')
+log = Logging(options, tag='style-api:Feeds')
 
 class Feeds(object):
   def __init__(self):
@@ -21,6 +22,7 @@ class Feeds(object):
   def get_feeds(offset=None, limit=None):
     feed = Feed(log)
     res = GetFeedResponse()
+    start_time = time.time()
 
     try:
       feeds = feed.feeds(offset, limit)
@@ -32,6 +34,8 @@ class Feeds(object):
       log.error(str(e))
       response_status = 400
 
+    elapsed_time = time.time() - start_time
+    log.info('get_feeds time: ' + str(elapsed_time))
     return res, response_status
 
 

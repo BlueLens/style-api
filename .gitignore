@@ -209,4 +209,5 @@ kubernetes/config.yaml
 *.pb
 
 tmp.jpg
+img.jpg
 file.jpg

@@ -2,7 +2,7 @@
 
 from __future__ import absolute_import
 # import models into model package
-from .box_array import BoxArray
+from .box import Box
 from .box_object import BoxObject
 from .boxes_array import BoxesArray
 from .get_feed_response import GetFeedResponse

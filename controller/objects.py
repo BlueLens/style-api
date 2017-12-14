@@ -22,7 +22,7 @@ options = {
   'REDIS_SERVER': REDIS_SERVER,
   'REDIS_PASSWORD': REDIS_PASSWORD
 }
-log = Logging(options, tag='style-api:Products')
+log = Logging(options, tag='style-api:Objects')
 
 TMP_IMG = 'tmp.jpg'
 
@@ -84,7 +84,9 @@ class Objects(object):
 
         image.boxes = boxes
         image.url = image_url
+        log.debug('before product_api.add_image')
         api_res = product_api.add_image(image)
+        log.debug('after product_api.add_image')
         image_id = api_res.data.image_id
 
         res_data = GetObjectsResponseData()
@@ -109,7 +111,7 @@ class Objects(object):
       res_data = GetObjectsByProductIdResponseData()
       boxes = search.get_objects_by_product_id(product_id)
       res_data.product_id = product_id
-      res_data.boxes = BoxesArray.from_dict(boxes)
+      res_data.boxes = boxes
       res.message = "Successful"
       res.data = res_data
       response_status = 200

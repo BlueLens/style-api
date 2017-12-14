@@ -318,13 +318,21 @@ definitions:
     type: "array"
     items:
       $ref: "#/definitions/Product"
-  BoxArray:
-    type: "array"
-    items:
-      type: "number"
-      format: "float"
-      description: ""
-    maxItems: 4
+  Box:
+    type: "object"
+    properties:
+      left:
+        type: "number"
+        format: "float"
+      right:
+        type: "number"
+        format: "float"
+      top:
+        type: "number"
+        format: "float"
+      bottom:
+        type: "number"
+        format: "float"
   BoxesArray:
     type: "array"
     items:
@@ -333,7 +341,7 @@ definitions:
     type: "object"
     properties:
       box:
-        $ref: "#/definitions/BoxArray"
+        $ref: "#/definitions/Box"
       class_code:
         type: "string"
       class_name:
@@ -396,13 +404,17 @@ definitions:
   GetObjectsResponse_data:
     properties:
       boxes:
-        $ref: "#/definitions/BoxesArray"
+        type: "array"
+        items:
+          $ref: "#/definitions/BoxObject"
       image_id:
         type: "string"
   GetObjectsByProductIdResponse_data:
     properties:
       boxes:
-        $ref: "#/definitions/BoxesArray"
+        type: "array"
+        items:
+          $ref: "#/definitions/BoxObject"
       product_id:
         type: "string"
 externalDocs:
