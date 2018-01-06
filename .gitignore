@@ -206,6 +206,7 @@ Session.vim
 tags
 
 kubernetes/config.yaml
+kubernetes/config-dev.yaml
 *.pb
 
 tmp.jpg
