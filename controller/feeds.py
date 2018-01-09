@@ -5,8 +5,8 @@ from bluelens_log import Logging
 from swagger_server.models.get_feed_response import GetFeedResponse
 from .feed import Feed
 
-REDIS_SERVER = os.environ['REDIS_SERVER']
-REDIS_PASSWORD = os.environ['REDIS_PASSWORD']
+REDIS_SERVER = os.environ['REDIS_SEARCH_SERVER']
+REDIS_PASSWORD = os.environ['REDIS_SEARCH_PASSWORD']
 
 options = {
   'REDIS_SERVER': REDIS_SERVER,

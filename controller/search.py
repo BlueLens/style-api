@@ -8,40 +8,28 @@ import uuid
 import redis
 import pickle
 import urllib.request
-import tensorflow as tf
 from stylelens_feature import feature_extract
-# import stylelens_search_vector
-# from stylelens_search_vector.rest import ApiException
-import stylelens_product
-from stylelens_product.rest import ApiException
-from pprint import pprint
+from stylelens_search_vector.vector_search import VectorSearch
+from stylelens_detect.object_detect import ObjectDetector
 
 from swagger_server.models.boxes_array import BoxesArray
 from swagger_server.models.box_object import BoxObject
 from swagger_server.models.box import Box
-from swagger_server.models.product import Product
-
-import grpc
-from controller import object_detect_pb2
-from controller import object_detect_pb2_grpc
-from controller import vector_search_pb2
-from controller import vector_search_pb2_grpc
-
 
 VECTOR_SIMILARITY_THRESHHOLD = 450
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
-REDIS_SERVER = os.environ['REDIS_SERVER']
-REDIS_PASSWORD = os.environ['REDIS_PASSWORD']
+REDIS_SERVER = os.environ['REDIS_SEARCH_SERVER']
+REDIS_PASSWORD = os.environ['REDIS_SEARCH_PASSWORD']
 
 OD_HOST = os.environ['OD_HOST']
 OD_PORT = os.environ['OD_PORT']
 
-SEARCH_HOST = os.environ['SEARCH_HOST']
-SEARCH_PORT = os.environ['SEARCH_PORT']
+SEARCH_HOST = os.environ['VECTOR_SEARCH_HOST']
+SEARCH_PORT = os.environ['VECTOR_SEARCH_PORT']
 
-REDIS_KEY_IMAGE_HASH = 'bl:image:hash'
-REDIS_KEY_IMAGE_LIST = 'bl:image:list'
+REDIS_INDEXED_IMAGE_LIST = 'bl:indexed:image:list'
+REDIS_INDEXED_OBJECT_LIST = 'bl:indexed:object:list'
 
 REDIS_KEY_OBJECT_LIST = 'bl:object:list'
 REDIS_OBJECT_HASH = 'bl:object:hash'
@@ -55,8 +43,9 @@ class Search:
   def __init__(self, log):
     log.info('init')
     self.image_feature = feature_extract.ExtractFeature(use_gpu=True)
-    # self.vector_search_client = stylelens_search_vector.SearchApi()
     self.log = log
+    self.vector_search = VectorSearch()
+    self.object_detector = ObjectDetector()
 
   def search_image_file(self, image_file, offset=0, limit=5):
 
@@ -97,26 +86,21 @@ class Search:
     print(feature.dtype)
     elapsed_time = time.time() - start_time
     self.log.info('search_image time: ' + str(elapsed_time))
-    return self.query_feature(feature.tolist(), offset, limit)
+    return self.query_feature(feature, offset, limit)
 
   def query_feature(self, vector, offset=0, limit=5):
     try:
       # Query to search vector
       start_time = time.time()
-      channel = grpc.insecure_channel(SEARCH_HOST + ':' + SEARCH_PORT)
-      stub = vector_search_pb2_grpc.SearchStub(channel)
-      v = np.asarray(vector, dtype=np.float32)
-      results = stub.SearchVector(vector_search_pb2.SearchRequest(vector=v.tobytes(),
-                                                                  candidate=limit))
-      # print(results)
-      # d = results.vector_d
-      # i = results.vector_i
-      distances = np.fromstring(results.vector_d, dtype=np.float32)
-      ids = np.fromstring(results.vector_i, dtype=np.int)
+
+      vector_d, vector_i = self.vector_search.search(vector, limit)
+      distances = np.fromstring(vector_d, dtype=np.float32)
+      ids = np.fromstring(vector_i, dtype=np.int)
+
       elapsed_time = time.time() - start_time
       self.log.debug('vector search time: ' + str(elapsed_time))
       # pprint(api_response)
-    except ApiException as e:
+    except Exception as e:
       self.log.error("Exception when calling SearchApi->search_vector: %s\n" % e)
 
 
@@ -144,10 +128,11 @@ class Search:
   def get_products_from_db(self, ids, offset=0, limit=5):
     self.log.debug('get_products_from_db')
     start_time = time.time()
-    product_api = stylelens_product.ProductApi()
+    product_api = None
+    # product_api = stylelens_product.ProductApi()
     try:
       api_response = product_api.get_products_by_ids(ids)
-    except ApiException as e:
+    except Exception as e:
       self.log.error("Exception when calling ProductApi->get_products_by_ids: %s\n" % e)
     elapsed_time = time.time() - start_time
     self.log.debug('get_products_from_db time: ' + str(elapsed_time))
@@ -196,8 +181,9 @@ class Search:
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
   def extract_feature(self, file):
-    feature = self.image_feature.extract_feature(file)
-    return feature
+    feature_vector = self.image_feature.extract_feature(file)
+    # feature = np.fromstring(feature_vector, dtype=np.float32)
+    return feature_vector
 
   def get_product_info(self, index):
     start_time = time.time()
@@ -218,17 +204,10 @@ class Search:
     # self.log.info('get_product_info time: ' + str(elapsed_time))
     return product
 
-  def get_objects(self, image_data, products_offset=0, products_limit=5):
+  def get_objects(self, image_file, products_offset=0, products_limit=5):
     start_time = time.time()
-    channel = grpc.insecure_channel(OD_HOST + ':' + OD_PORT)
-    stub = object_detect_pb2_grpc.DetectStub(channel)
 
-    # with tf.gfile.GFile(file, 'rb') as fid:
-    #   image_data = fid.read()
-    local_start_time = time.time()
-    objects = stub.GetObjects(object_detect_pb2.DetectRequest(file_data=image_data))
-    elapsed_time = time.time() - local_start_time
-    self.log.info('local_get_objects time: ' + str(elapsed_time))
+    objects = self.object_detector.getObjects(file=image_file)
 
     boxes_array = []
     feature = []
@@ -309,8 +288,7 @@ class Search:
         f = urllib.request.urlopen(product['main_image_mobile_full'])
       except Exception as e:
         self.log.error(str(e))
-      image_data = f.fp.read()
-      boxes = self.get_objects(image_data, limit)
+      boxes = self.get_objects(f, limit)
 
       for box in boxes:
         if box.products:

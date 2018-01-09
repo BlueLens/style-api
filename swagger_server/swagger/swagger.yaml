@@ -2,7 +2,7 @@
 swagger: "2.0"
 info:
   description: "This is a API document for Stylens Service"
-  version: "0.0.1"
+  version: "0.0.2"
   title: "style-api"
   contact:
     email: "master@bluehack.net"
@@ -14,8 +14,8 @@ basePath: "/"
 tags:
 - name: "feed"
   description: "feed"
-- name: "product"
-  description: "product"
+- name: "image"
+  description: "image"
 schemes:
 - "http"
 paths:
@@ -51,17 +51,17 @@ paths:
         404:
           description: "Feeds not found"
       x-swagger-router-controller: "swagger_server.controllers.feed_controller"
-  /products:
+  /images:
     get:
       tags:
-      - "product"
-      summary: "Get Products by productId"
-      description: "Returns similar Products with productId"
-      operationId: "get_products"
+      - "image"
+      summary: "Get Images by imageId"
+      description: "Returns similar Images with imageId"
+      operationId: "get_images"
       produces:
       - "application/json"
       parameters:
-      - name: "productId"
+      - name: "imageId"
         in: "query"
         description: ""
         required: true
@@ -82,44 +82,44 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: "#/definitions/GetProductsResponse"
+            $ref: "#/definitions/GetImagesResponse"
         400:
           description: "Invalid input supplied"
         404:
           description: "imageId or objectId not found"
-      x-swagger-router-controller: "swagger_server.controllers.product_controller"
-  /products/{productId}:
+      x-swagger-router-controller: "swagger_server.controllers.image_controller"
+  /images/{imageId}:
     get:
       tags:
-      - "product"
-      summary: "Find Product by ID"
-      description: "Returns a single Product"
-      operationId: "get_product_by_id"
+      - "image"
+      summary: "Find Images by ID"
+      description: "Returns a single Image"
+      operationId: "get_image_by_id"
       produces:
       - "application/json"
       parameters:
-      - name: "productId"
+      - name: "imageId"
         in: "path"
-        description: "ID of Product to return"
+        description: "ID of Image to return"
         required: true
         type: "string"
       responses:
         200:
           description: "successful operation"
           schema:
-            $ref: "#/definitions/GetProductResponse"
+            $ref: "#/definitions/GetImageResponse"
         400:
           description: "Invalid ID supplied"
         404:
-          description: "Product not found"
-      x-swagger-router-controller: "swagger_server.controllers.product_controller"
-  /products/images:
+          description: "Image not found"
+      x-swagger-router-controller: "swagger_server.controllers.image_controller"
+  /images/userImages:
     post:
       tags:
-      - "product"
-      summary: "Query to search products"
+      - "image"
+      summary: "Query to search images"
       description: ""
-      operationId: "get_products_by_image_file"
+      operationId: "get_images_by_user_image_file"
       consumes:
       - "multipart/form-data"
       produces:
@@ -127,7 +127,7 @@ paths:
       parameters:
       - name: "file"
         in: "formData"
-        description: "Image file to upload (only support jpg format yet)"
+        description: "User's Image file to upload (only support jpg format yet)"
         required: false
         type: "file"
       - name: "offset"
@@ -146,26 +146,26 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: "#/definitions/GetProductsResponse"
+            $ref: "#/definitions/GetImagesResponse"
         400:
           description: "Invalid input"
-      x-swagger-router-controller: "swagger_server.controllers.product_controller"
-  /products/images/{imageId}/objects/{objectId}:
+      x-swagger-router-controller: "swagger_server.controllers.image_controller"
+  /images/userImages/{userImageId}/objects/{objectIndex}:
     get:
       tags:
-      - "product"
-      summary: "Get Products by imageId and objectId"
-      description: "Returns Products belongs to a imageId and objectId"
-      operationId: "get_products_by_image_id_and_object_id"
+      - "image"
+      summary: "Get Images by userImageId and objectIndex"
+      description: "Returns Images belongs to a userImageId and objectIndex"
+      operationId: "get_images_by_user_image_id_and_object_index"
       produces:
       - "application/json"
       parameters:
-      - name: "imageId"
+      - name: "userImageId"
         in: "path"
         description: ""
         required: true
         type: "string"
-      - name: "objectId"
+      - name: "objectIndex"
         in: "path"
         description: ""
         required: true
@@ -175,19 +175,19 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: "#/definitions/GetProductsResponse"
+            $ref: "#/definitions/GetImagesResponse"
         400:
           description: "Invalid input supplied"
         404:
-          description: "imageId or objectId not found"
-      x-swagger-router-controller: "swagger_server.controllers.product_controller"
-  /products/hosts/{hostCode}/products/{productNo}:
+          description: "userImageId or objectIndex not found"
+      x-swagger-router-controller: "swagger_server.controllers.image_controller"
+  /images/hosts/{hostCode}/images/{productNo}:
     get:
       tags:
-      - "product"
-      summary: "Get Product by hostCode and productNo"
-      description: "Returns Product belongs to a Host and productNo"
-      operationId: "get_product_by_hostcode_and_product_no"
+      - "image"
+      summary: "Get Image by hostCode and productNo"
+      description: "Returns Image belongs to a Host and productNo"
+      operationId: "get_image_by_hostcode_and_product_no"
       produces:
       - "application/json"
       parameters:
@@ -205,19 +205,19 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: "#/definitions/GetProductResponse"
+            $ref: "#/definitions/GetImageResponse"
         400:
           description: "Invalid input supplied"
         404:
           description: "Host or productNo not found"
-      x-swagger-router-controller: "swagger_server.controllers.product_controller"
+      x-swagger-router-controller: "swagger_server.controllers.image_controller"
   /objects:
     post:
       tags:
       - "object"
-      summary: "Query to search objects and products"
+      summary: "Query to search objects and images"
       description: ""
-      operationId: "get_objects_by_image_file"
+      operationId: "get_objects_by_user_image_file"
       consumes:
       - "multipart/form-data"
       produces:
@@ -225,7 +225,7 @@ paths:
       parameters:
       - name: "file"
         in: "formData"
-        description: "Image file to upload (only support jpg format yet)"
+        description: "User's Image file to upload (only support jpg format yet)"
         required: true
         type: "file"
       responses:
@@ -236,17 +236,17 @@ paths:
         400:
           description: "Invalid input"
       x-swagger-router-controller: "swagger_server.controllers.object_controller"
-  /objects/products/{productId}:
+  /objects/images/{imageId}:
     get:
       tags:
       - "object"
       summary: "Query to search multiple objects"
       description: ""
-      operationId: "get_objects_by_product_id"
+      operationId: "get_objects_by_image_id"
       produces:
       - "application/json"
       parameters:
-      - name: "productId"
+      - name: "imageId"
         in: "path"
         description: ""
         required: true
@@ -255,7 +255,7 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: "#/definitions/GetObjectsByProductIdResponse"
+            $ref: "#/definitions/GetObjectsByImageIdResponse"
         400:
           description: "Invalid input"
       x-swagger-router-controller: "swagger_server.controllers.object_controller"
@@ -265,12 +265,14 @@ securityDefinitions:
     name: "api_key"
     in: "header"
 definitions:
-  Product:
+  Image:
     type: "object"
     properties:
       id:
         type: "string"
-      name:
+      product_name:
+        type: "string"
+      product_id:
         type: "string"
       host_code:
         type: "string"
@@ -278,13 +280,9 @@ definitions:
         type: "string"
       host_name:
         type: "string"
-      tags:
-        type: "array"
-        items:
-          type: "string"
       class_code:
         type: "string"
-        example: "n0100001"
+        example: ""
       price:
         type: "integer"
         format: "int32"
@@ -296,28 +294,59 @@ definitions:
         type: "string"
       nation:
         type: "string"
-      main_image:
-        type: "string"
-        description: "image url"
       main_image_mobile_full:
         type: "string"
         description: "Mobile full size of image url"
       main_image_mobile_thumb:
         type: "string"
         description: "Mobile thumbnail size of image url"
-      sizes:
-        type: "array"
-        items:
-          type: "string"
-      discount_rate:
-        type: "integer"
-        format: "int32"
       version:
         type: "string"
-  ProductsArray:
+      images:
+        type: "array"
+        items:
+          $ref: "#/definitions/SimImage"
+  SimImage:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      product_name:
+        type: "string"
+      product_id:
+        type: "string"
+      host_code:
+        type: "string"
+      host_url:
+        type: "string"
+      host_name:
+        type: "string"
+      class_code:
+        type: "string"
+        example: ""
+      price:
+        type: "integer"
+        format: "int32"
+      currency_unit:
+        type: "string"
+      product_url:
+        type: "string"
+      product_no:
+        type: "string"
+      nation:
+        type: "string"
+      main_image_mobile_full:
+        type: "string"
+        description: "Mobile full size of image url"
+      main_image_mobile_thumb:
+        type: "string"
+        description: "Mobile thumbnail size of image url"
+      version:
+        type: "string"
+  ImagesArray:
     type: "array"
     items:
-      $ref: "#/definitions/Product"
+      $ref: "#/definitions/Image"
   Box:
     type: "object"
     properties:
@@ -340,26 +369,30 @@ definitions:
   BoxObject:
     type: "object"
     properties:
+      id:
+        type: "string"
       box:
         $ref: "#/definitions/Box"
-      class_code:
+      image_id:
         type: "string"
-      class_name:
+      version_id:
+        type: "string"
+      class_code:
         type: "string"
       score:
         type: "number"
         format: "float"
-      products:
+      images:
         type: "array"
         items:
-          $ref: "#/definitions/Product"
-  GetProductResponse:
+          $ref: "#/definitions/Image"
+  GetImageResponse:
     type: "object"
     properties:
       message:
         type: "string"
       data:
-        $ref: "#/definitions/Product"
+        $ref: "#/definitions/Image"
   GetFeedResponse:
     type: "object"
     properties:
@@ -368,7 +401,7 @@ definitions:
       data:
         type: "array"
         items:
-          $ref: "#/definitions/Product"
+          $ref: "#/definitions/Image"
   GetObjectsResponse:
     type: "object"
     properties:
@@ -376,13 +409,13 @@ definitions:
         type: "string"
       data:
         $ref: "#/definitions/GetObjectsResponse_data"
-  GetObjectsByProductIdResponse:
+  GetObjectsByImageIdResponse:
     type: "object"
     properties:
       message:
         type: "string"
       data:
-        $ref: "#/definitions/GetObjectsByProductIdResponse_data"
+        $ref: "#/definitions/GetObjectsResponse_data"
   SearchImageResponse:
     type: "object"
     properties:
@@ -391,8 +424,8 @@ definitions:
       data:
         type: "array"
         items:
-          $ref: "#/definitions/Product"
-  GetProductsResponse:
+          $ref: "#/definitions/Image"
+  GetImagesResponse:
     type: "object"
     properties:
       message:
@@ -400,7 +433,7 @@ definitions:
       data:
         type: "array"
         items:
-          $ref: "#/definitions/Product"
+          $ref: "#/definitions/Image"
   GetObjectsResponse_data:
     properties:
       boxes:
@@ -408,14 +441,6 @@ definitions:
         items:
           $ref: "#/definitions/BoxObject"
       image_id:
-        type: "string"
-  GetObjectsByProductIdResponse_data:
-    properties:
-      boxes:
-        type: "array"
-        items:
-          $ref: "#/definitions/BoxObject"
-      product_id:
         type: "string"
 externalDocs:
   description: "Find out more about BlueLens"

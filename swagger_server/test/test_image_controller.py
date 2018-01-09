@@ -2,73 +2,73 @@
 
 from __future__ import absolute_import
 
-from swagger_server.models.get_product_response import GetProductResponse
-from swagger_server.models.get_products_response import GetProductsResponse
+from swagger_server.models.get_image_response import GetImageResponse
+from swagger_server.models.get_images_response import GetImagesResponse
 from . import BaseTestCase
 from six import BytesIO
 from flask import json
 
 
-class TestProductController(BaseTestCase):
-    """ ProductController integration test stubs """
+class TestImageController(BaseTestCase):
+    """ ImageController integration test stubs """
 
-    def test_get_product_by_hostcode_and_product_no(self):
+    def test_get_image_by_hostcode_and_product_no(self):
         """
-        Test case for get_product_by_hostcode_and_product_no
+        Test case for get_image_by_hostcode_and_product_no
 
-        Get Product by hostCode and productNo
+        Get Image by hostCode and productNo
         """
-        response = self.client.open('//products/hosts/{hostCode}/products/{productNo}'.format(hostCode='hostCode_example', productNo='productNo_example'),
+        response = self.client.open('//images/hosts/{hostCode}/images/{productNo}'.format(hostCode='hostCode_example', productNo='productNo_example'),
                                     method='GET')
         self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
 
-    def test_get_product_by_id(self):
+    def test_get_image_by_id(self):
         """
-        Test case for get_product_by_id
+        Test case for get_image_by_id
 
-        Find Product by ID
+        Find Images by ID
         """
-        response = self.client.open('//products/{productId}'.format(productId='productId_example'),
+        response = self.client.open('//images/{imageId}'.format(imageId='imageId_example'),
                                     method='GET')
         self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
 
-    def test_get_products(self):
+    def test_get_images(self):
         """
-        Test case for get_products
+        Test case for get_images
 
-        Get Products by productId
+        Get Images by imageId
         """
-        query_string = [('productId', 'productId_example'),
+        query_string = [('imageId', 'imageId_example'),
                         ('offset', 56),
                         ('limit', 56)]
-        response = self.client.open('//products',
+        response = self.client.open('//images',
                                     method='GET',
                                     query_string=query_string)
         self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
 
-    def test_get_products_by_image_file(self):
+    def test_get_images_by_user_image_file(self):
         """
-        Test case for get_products_by_image_file
+        Test case for get_images_by_user_image_file
 
-        Query to search products
+        Query to search images
         """
         query_string = [('offset', 56),
                         ('limit', 56)]
         data = dict(file=(BytesIO(b'some file data'), 'file.txt'))
-        response = self.client.open('//products/images',
+        response = self.client.open('//images/userImages',
                                     method='POST',
                                     data=data,
                                     content_type='multipart/form-data',
                                     query_string=query_string)
         self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
 
-    def test_get_products_by_image_id_and_object_id(self):
+    def test_get_images_by_user_image_id_and_object_index(self):
         """
-        Test case for get_products_by_image_id_and_object_id
+        Test case for get_images_by_user_image_id_and_object_index
 
-        Get Products by imageId and objectId
+        Get Images by userImageId and objectIndex
         """
-        response = self.client.open('//products/images/{imageId}/objects/{objectId}'.format(imageId='imageId_example', objectId=56),
+        response = self.client.open('//images/userImages/{userImageId}/objects/{objectIndex}'.format(userImageId='userImageId_example', objectIndex=56),
                                     method='GET')
         self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
 

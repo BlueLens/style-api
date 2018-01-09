@@ -4,10 +4,8 @@ RUN mkdir -p /opt/app/model
 RUN mkdir -p /usr/src/app
 
 WORKDIR /usr/src/app
-
 RUN curl https://s3.ap-northeast-2.amazonaws.com/bluelens-style-model/classification/inception_v3/classify_image_graph_def.pb -o /opt/app/model/classify_image_graph_def.pb
 ENV CLASSIFY_GRAPH=/opt/app/model/classify_image_graph_def.pb
-
 COPY requirements.txt /usr/src/app/
 
 RUN pip3 install --no-cache-dir -r requirements.txt

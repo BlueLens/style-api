@@ -13,8 +13,8 @@ basePath: /
 tags:
   - name: feed
     description: feed
-  - name: image
-    description: image
+  - name: product
+    description: product
 schemes:
   - http
 paths:
@@ -49,17 +49,17 @@ paths:
           description: "Invalid input"
         404:
           description: "Feeds not found"
-  /images:
+  /products:
     get:
       tags:
-      - image
-      summary: "Get Images by imageId"
-      description: "Returns similar Images with imageId"
-      operationId: "getImages"
+      - product
+      summary: "Get Products by productId"
+      description: "Returns similar Products with productId"
+      operationId: "getProducts"
       produces:
       - "application/json"
       parameters:
-      - name: "imageId"
+      - name: "productId"
         in: "query"
         description: ""
         required: true
@@ -80,42 +80,42 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: "#/definitions/GetImagesResponse"
+            $ref: "#/definitions/GetProductsResponse"
         400:
           description: "Invalid input supplied"
         404:
           description: "imageId or objectId not found"
-  /images/{imageId}:
+  /products/{productId}:
     get:
       tags:
-      - image
-      summary: "Find Images by ID"
-      description: "Returns a single Image"
-      operationId: "getImageById"
+      - product
+      summary: "Find Product by ID"
+      description: "Returns a single Product"
+      operationId: "getProductById"
       produces:
       - "application/json"
       parameters:
-      - name: "imageId"
+      - name: "productId"
         in: "path"
-        description: "ID of Image to return"
+        description: "ID of Product to return"
         required: true
         type: string
       responses:
         200:
           description: "successful operation"
           schema:
-            $ref: "#/definitions/GetImageResponse"
+            $ref: "#/definitions/GetProductResponse"
         400:
           description: "Invalid ID supplied"
         404:
-          description: "Image not found"
-  /images/userImages:
+          description: "Product not found"
+  /products/images:
     post:
       tags:
-      - image
-      summary: Query to search images
+      - "product"
+      summary: Query to search products
       description: ''
-      operationId: getImagesByUserImageFile
+      operationId: getProductsByImageFile
       consumes:
       - "multipart/form-data"
       produces:
@@ -123,7 +123,7 @@ paths:
       parameters:
       - name: "file"
         in: "formData"
-        description: "User's Image file to upload (only support jpg format yet)"
+        description: "Image file to upload (only support jpg format yet)"
         required: false
         type: "file"
       - name: "offset"
@@ -142,26 +142,26 @@ paths:
         200:
           description: successful operation
           schema:
-            $ref: '#/definitions/GetImagesResponse'
+            $ref: '#/definitions/GetProductsResponse'
         400:
           description: Invalid input
 
-  /images/userImages/{userImageId}/objects/{objectIndex}:
+  /products/images/{imageId}/objects/{objectId}:
     get:
       tags:
-      - image
-      summary: "Get Images by userImageId and objectIndex"
-      description: "Returns Images belongs to a userImageId and objectIndex"
-      operationId: "getImagesByUserImageIdAndObjectIndex"
+      - product
+      summary: "Get Products by imageId and objectId"
+      description: "Returns Products belongs to a imageId and objectId"
+      operationId: "getProductsByImageIdAndObjectId"
       produces:
       - "application/json"
       parameters:
-      - name: "userImageId"
+      - name: "imageId"
         in: "path"
         description: ""
         required: true
         type: string
-      - name: "objectIndex"
+      - name: "objectId"
         in: "path"
         description: ""
         required: true
@@ -171,19 +171,19 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: "#/definitions/GetImagesResponse"
+            $ref: "#/definitions/GetProductsResponse"
         400:
           description: "Invalid input supplied"
         404:
-          description: "userImageId or objectIndex not found"
+          description: "imageId or objectId not found"
 
-  /images/hosts/{hostCode}/images/{productNo}:
+  /products/hosts/{hostCode}/products/{productNo}:
     get:
       tags:
-      - image
-      summary: "Get Image by hostCode and productNo"
-      description: "Returns Image belongs to a Host and productNo"
-      operationId: "getImageByHostcodeAndProductNo"
+      - product
+      summary: "Get Product by hostCode and productNo"
+      description: "Returns Product belongs to a Host and productNo"
+      operationId: "getProductByHostcodeAndProductNo"
       produces:
       - "application/json"
       parameters:
@@ -201,7 +201,7 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: "#/definitions/GetImageResponse"
+            $ref: "#/definitions/GetProductResponse"
         400:
           description: "Invalid input supplied"
         404:
@@ -211,9 +211,9 @@ paths:
     post:
       tags:
       - "object"
-      summary: Query to search objects and images
+      summary: Query to search objects and products
       description: ''
-      operationId: getObjectsByUserImageFile
+      operationId: getObjectsByImageFile
       consumes:
       - "multipart/form-data"
       produces:
@@ -221,7 +221,7 @@ paths:
       parameters:
       - name: "file"
         in: "formData"
-        description: "User's Image file to upload (only support jpg format yet)"
+        description: "Image file to upload (only support jpg format yet)"
         required: true
         type: "file"
       responses:
@@ -232,17 +232,17 @@ paths:
         400:
           description: Invalid input
 
-  /objects/images/{imageId}:
+  /objects/products/{productId}:
     get:
       tags:
       - object
       summary: Query to search multiple objects
       description: ''
-      operationId: getObjectsByImageId
+      operationId: getObjectsByProductId
       produces:
       - "application/json"
       parameters:
-      - name: imageId
+      - name: productId
         in: "path"
         description: ""
         required: true
@@ -251,7 +251,7 @@ paths:
         200:
           description: successful operation
           schema:
-            $ref: '#/definitions/GetObjectsByImageIdResponse'
+            $ref: '#/definitions/GetObjectsByProductIdResponse'
         400:
           description: Invalid input
 
@@ -261,14 +261,12 @@ securityDefinitions:
     name: api_key
     in: header
 definitions:
-  Image:
+  Product:
     type: object
     properties:
       id:
         type: string
-      product_name:
-        type: string
-      product_id:
+      name:
         type: string
       host_code:
         type: string
@@ -276,51 +274,13 @@ definitions:
         type: string
       host_name:
         type: string
-      class_code:
-        type: string
-        example: ""
-      price:
-        type: integer
-        format: int32
-      currency_unit:
-        type: string
-      product_url:
-        type: string
-      product_no:
-        type: string
-      nation:
-        type: string
-      main_image_mobile_full:
-        type: string
-        description: "Mobile full size of image url"
-      main_image_mobile_thumb:
-        type: string
-        description: "Mobile thumbnail size of image url"
-      version:
-        type: string
-      images:
+      tags:
         type: array
         items:
-          $ref: '#/definitions/SimImage'
-
-  SimImage:
-    type: object
-    properties:
-      id:
-        type: string
-      product_name:
-        type: string
-      product_id:
-        type: string
-      host_code:
-        type: string
-      host_url:
-        type: string
-      host_name:
-        type: string
+          type: string
       class_code:
         type: string
-        example: ""
+        example: "n0100001"
       price:
         type: integer
         format: int32
@@ -332,19 +292,29 @@ definitions:
         type: string
       nation:
         type: string
+      main_image:
+        type: string
+        description: "image url"
       main_image_mobile_full:
         type: string
         description: "Mobile full size of image url"
       main_image_mobile_thumb:
         type: string
         description: "Mobile thumbnail size of image url"
+      sizes:
+        type: array
+        items:
+          type: string
+      discount_rate:
+        type: integer
+        format: int32
       version:
         type: string
 
-  ImagesArray:
+  ProductsArray:
     type: array
     items:
-      $ref: '#/definitions/Image'
+      $ref: '#/definitions/Product'
 
   Box:
     type: object
@@ -370,31 +340,27 @@ definitions:
   BoxObject:
     type: object
     properties:
-      id:
-        type: string
       box:
         $ref: '#/definitions/Box'
-      image_id:
-        type: string
-      version_id:
-        type: string
       class_code:
+        type: string
+      class_name:
         type: string
       score:
         type: number
         format: float
-      images:
+      products:
         type: array
         items:
-          $ref: '#/definitions/Image'
+          $ref: '#/definitions/Product'
 
-  GetImageResponse:
+  GetProductResponse:
     type: object
     properties:
       message:
         type: string
       data:
-        $ref: "#/definitions/Image"
+        $ref: "#/definitions/Product"
 
   GetFeedResponse:
     type: object
@@ -404,7 +370,7 @@ definitions:
       data:
         type: array
         items:
-          $ref: "#/definitions/Image"
+          $ref: "#/definitions/Product"
 
   GetObjectsResponse:
     type: object
@@ -421,7 +387,7 @@ definitions:
           image_id:
             type: string
 
-  GetObjectsByImageIdResponse:
+  GetObjectsByProductIdResponse:
     type: object
     properties:
       message:
@@ -433,7 +399,7 @@ definitions:
             type: array
             items:
               $ref: '#/definitions/BoxObject'
-          image_id:
+          product_id:
             type: string
 
   SearchImageResponse:
@@ -444,9 +410,9 @@ definitions:
       data:
         type: array
         items:
-          $ref: "#/definitions/Image"
+          $ref: "#/definitions/Product"
 
-  GetImagesResponse:
+  GetProductsResponse:
     type: object
     properties:
       message:
@@ -454,7 +420,7 @@ definitions:
       data:
         type: array
         items:
-          $ref: "#/definitions/Image"
+          $ref: "#/definitions/Product"
 
 externalDocs:
   description: Find out more about BlueLens
