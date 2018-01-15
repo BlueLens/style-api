@@ -39,11 +39,14 @@ REDIS_PRODUCT_HASH = 'bl:product:hash'
 REDIS_PRODUCTS_BY_PRODUCT_HASH = 'bl:products:by:product'
 TMP_CROP_IMG_FILE = 'tmp.jpg'
 
+DETECT_IMAGE_RESIZE_WIDTH = 380
+DETECT_IMAGE_RESIZE_HEIGHT= 380
+
 rconn = redis.StrictRedis(REDIS_SERVER, port=6379, password=REDIS_PASSWORD)
 
-class Search:
+class Playground:
   def __init__(self, log):
-    log.info('init')
+    log.info('Playground:init')
     self.image_feature = feature_extract.ExtractFeature(use_gpu=True)
     self.log = log
     self.vector_search = VectorSearch()
@@ -64,7 +67,7 @@ class Search:
         bg.save('file.jpg', quality=95)
         im = bg
       im.show()
-      size = 300, 300
+      size = DETECT_IMAGE_RESIZE_WIDTH, DETECT_IMAGE_RESIZE_HEIGHT
       im.thumbnail(size, Image.ANTIALIAS)
       # im.show()
       file_name = str(uuid.uuid4()) + '.jpg'
@@ -79,7 +82,7 @@ class Search:
 
     start_time = time.time()
     im = Image.open(io.BytesIO(image_data))
-    size = 300, 300
+    size = DETECT_IMAGE_RESIZE_WIDTH, DETECT_IMAGE_RESIZE_HEIGHT
     im.thumbnail(size, Image.ANTIALIAS)
     # im.show()
     file_name = str(uuid.uuid4()) + '.jpg'
@@ -248,28 +251,9 @@ class Search:
       boxes_array.append(box_object)
       i = i + 1
 
-    if best_score == -1:
-      box_object = BoxObject()
-      box_object.class_name = 'na'
-      box_object.class_code = 'na'
-      box_object.score = '-1'
-
-      box = Box()
-      box.left = -1
-      box.right = -1
-      box.top = -1
-      box.bottom = -1
-      box_object.box = box
-      boxes_array.append(box_object)
-      products = self.search_image_data(image_data, offset=products_offset, limit=products_limit)
-    else:
-      images = self.query_feature(object.feature, offset=products_offset, limit=products_limit)
-
     local_start_time = time.time()
     elapsed_time = time.time() - local_start_time
     self.log.info('query_feature time: ' + str(elapsed_time))
-    boxes_array[best_score_index].images = images
-
     elapsed_time = time.time() - start_time
     self.log.info('get_objects time: ' + str(elapsed_time))
     return boxes_array

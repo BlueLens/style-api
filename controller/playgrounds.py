@@ -11,7 +11,7 @@ from swagger_server.models.get_objects_by_image_id_response import GetObjectsByI
 from swagger_server.models.box_object import BoxObject
 from stylelens_index.indexes import Indexes
 from swagger_server.models.image import Image
-from .search import Search
+from .playground import Playground
 from util import utils
 
 REDIS_SERVER = os.environ['REDIS_SEARCH_SERVER']
@@ -38,13 +38,13 @@ def allowed_file(filename):
   return '.' in filename and \
          filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
-class Objects(object):
+class Playgrounds(object):
   def __init__(self):
     super().__init__()
 
   @staticmethod
-  def get_objects_by_user_image_file(file):
-    search = Search(log)
+  def get_playground_objects_by_user_image_file(file):
+    playground = Playground(log)
     res = GetObjectsResponse()
 
     if file and allowed_file(file.filename):
@@ -79,22 +79,17 @@ class Objects(object):
         index_api = Indexes()
         # image = stylelens_product.Image() # Product | Product object that needs to be added to the db.
         userImage = {}
-        image_url = utils.save_image_to_storage(str(uuid.uuid4()), 'user', TMP_IMG)
+        # image_url = utils.save_image_to_storage(str(uuid.uuid4()), 'user', TMP_IMG)
         # with open(TMP_IMG, 'rb') as im_f:
         #   img_data = im_f.read()
-        boxes = search.get_objects(TMP_IMG)
+        boxes = playground.get_objects(TMP_IMG)
 
-
-        for box_obj in boxes:
-          images = []
-          for prod in box_obj.images:
-            images.append(Image.from_dict(prod))
-          box_obj.images = images
 
         userImage['boxes'] = boxes
-        userImage['url'] = image_url
+        # userImage['url'] = image_url
         log.debug('before index_api.add_image')
-        id = index_api.add_user_image(userImage)
+        # id = index_api.add_user_image(userImage)
+        id = '1'
         log.debug('after product_api.add_image')
         image_id = id
 
