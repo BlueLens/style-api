@@ -9,8 +9,9 @@ from swagger_server.models.get_objects_response import GetObjectsResponse
 from swagger_server.models.get_objects_response_data import GetObjectsResponseData
 from swagger_server.models.get_objects_by_image_id_response import GetObjectsByImageIdResponse
 from swagger_server.models.box_object import BoxObject
-from stylelens_index.indexes import Indexes
 from swagger_server.models.image import Image
+from stylelens_index.index_images import IndexImages
+from stylelens_index.index_objects import IndexObjects
 from .search import Search
 from util import utils
 
@@ -76,7 +77,7 @@ class Objects(object):
         else:
           im.save(TMP_IMG)
 
-        index_api = Indexes()
+        index_image_api = IndexImages()
         # image = stylelens_product.Image() # Product | Product object that needs to be added to the db.
         userImage = {}
         image_url = utils.save_image_to_storage(str(uuid.uuid4()), 'user', TMP_IMG)
@@ -85,16 +86,16 @@ class Objects(object):
         boxes = search.get_objects(TMP_IMG)
 
 
-        for box_obj in boxes:
-          images = []
-          for prod in box_obj.images:
-            images.append(Image.from_dict(prod))
-          box_obj.images = images
+        # for box_obj in boxes:
+        #   images = []
+        #   for prod in box_obj.images:
+        #     images.append(Image.from_dict(prod))
+        #   box_obj.images = images
 
         userImage['boxes'] = boxes
         userImage['url'] = image_url
         log.debug('before index_api.add_image')
-        id = index_api.add_user_image(userImage)
+        id = index_image_api.add_user_image(userImage)
         log.debug('after product_api.add_image')
         image_id = id
 

@@ -15,8 +15,10 @@ from stylelens_detect.object_detect import ObjectDetector
 from swagger_server.models.boxes_array import BoxesArray
 from swagger_server.models.box_object import BoxObject
 from swagger_server.models.box import Box
+from stylelens_object.objects import Objects
+from stylelens_image.images import Images
 
-VECTOR_SIMILARITY_THRESHHOLD = 450
+VECTOR_SIMILARITY_THRESHHOLD = 100
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 REDIS_SERVER = os.environ['REDIS_SEARCH_SERVER']
@@ -24,6 +26,12 @@ REDIS_PASSWORD = os.environ['REDIS_SEARCH_PASSWORD']
 
 OD_HOST = os.environ['OD_HOST']
 OD_PORT = os.environ['OD_PORT']
+
+DB_OBJECT_HOST = os.environ['DB_OBJECT_HOST']
+DB_OBJECT_PORT = os.environ['DB_OBJECT_PORT']
+DB_OBJECT_NAME = os.environ['DB_OBJECT_NAME']
+DB_OBJECT_USER = os.environ['DB_OBJECT_USER']
+DB_OBJECT_PASSWORD = os.environ['DB_OBJECT_PASSWORD']
 
 SEARCH_HOST = os.environ['VECTOR_SEARCH_HOST']
 SEARCH_PORT = os.environ['VECTOR_SEARCH_PORT']
@@ -48,6 +56,8 @@ class Search:
     self.log = log
     self.vector_search = VectorSearch()
     self.object_detector = ObjectDetector()
+    self.object_api = Objects()
+    self.image_api = Images()
 
   def search_image_file(self, image_file, offset=0, limit=5):
 
@@ -79,7 +89,7 @@ class Search:
 
     start_time = time.time()
     im = Image.open(io.BytesIO(image_data))
-    size = 300, 300
+    size = 380, 380
     im.thumbnail(size, Image.ANTIALIAS)
     # im.show()
     file_name = str(uuid.uuid4()) + '.jpg'
@@ -117,11 +127,15 @@ class Search:
         i = i+ 1
 
     if len(arr_i) > 0:
-      object_index = arr_i[0]
-      object_id = rconn.hget(REDIS_INDEXED_OBJECT_LIST, object_index - 1)
-      object = rconn.hget(REDIS_INDEXED_OBJECT_LIST, object_id)
-      images = object['images']
-      return images
+      ids = [int(x) for x in arr_i]
+
+      try:
+        objects = self.object_api.get_objects_by_indexes(ids)
+        images = self.get_images_from_objects(objects)
+        return images
+      except Exception as e:
+        self.log.error('Trying Objects.get_objects_by_indexex():' + str(e))
+        return None
 
     # obj_ids = self.get_object_ids(arr_i)
     # prod_ids = self.get_image_ids(obj_ids)
@@ -133,6 +147,28 @@ class Search:
     #   # Using Redis
     #   products_info = self.get_image_info(prod_ids, offset=offset, limit=limit)
     return None
+
+  def get_images_from_objects(self, objects):
+    limit = 10
+    image_ids = []
+
+    for obj in objects:
+      image_ids.append(obj['image_id'])
+
+    ids = list(set(image_ids))
+    try:
+      _images = self.image_api.get_images_by_ids(ids)
+      images = []
+      for image in _images:
+        image['id'] = str(image.pop('_id'))
+        image.pop('images', None)
+        images.append(image)
+      return images
+    except Exception as e:
+      self.log.error(str(e))
+      return None
+
+    return images
 
   def get_products_from_db(self, ids, offset=0, limit=5):
     self.log.debug('get_products_from_db')
@@ -261,7 +297,7 @@ class Search:
       box.bottom = -1
       box_object.box = box
       boxes_array.append(box_object)
-      products = self.search_image_data(image_data, offset=products_offset, limit=products_limit)
+      # products = self.search_image_data(image_data, offset=products_offset, limit=products_limit)
     else:
       images = self.query_feature(object.feature, offset=products_offset, limit=products_limit)
 

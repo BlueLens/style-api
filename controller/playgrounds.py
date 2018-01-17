@@ -9,7 +9,6 @@ from swagger_server.models.get_objects_response import GetObjectsResponse
 from swagger_server.models.get_objects_response_data import GetObjectsResponseData
 from swagger_server.models.get_objects_by_image_id_response import GetObjectsByImageIdResponse
 from swagger_server.models.box_object import BoxObject
-from stylelens_index.indexes import Indexes
 from swagger_server.models.image import Image
 from .playground import Playground
 from util import utils
@@ -76,7 +75,7 @@ class Playgrounds(object):
         else:
           im.save(TMP_IMG)
 
-        index_api = Indexes()
+        # index_api = Indexes()
         # image = stylelens_product.Image() # Product | Product object that needs to be added to the db.
         userImage = {}
         # image_url = utils.save_image_to_storage(str(uuid.uuid4()), 'user', TMP_IMG)

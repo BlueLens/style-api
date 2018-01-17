@@ -6,7 +6,8 @@ from bluelens_log import Logging
 from swagger_server.models.get_images_response import GetImagesResponse
 from swagger_server.models.get_image_response import GetImageResponse
 from swagger_server.models.image import Image
-from stylelens_index.indexes import Indexes
+from stylelens_index.index_images import IndexImages
+from stylelens_index.index_objects import IndexObjects
 
 from .search import Search
 
@@ -93,7 +94,7 @@ class Images(object):
   def get_images(image_id, offset, limit):
     log.info('get_images_by_id')
     start_time = time.time()
-    index_api = Indexes()
+    index_image_api = IndexImages()
     res = GetImageResponse()
 
     try:
@@ -102,7 +103,7 @@ class Images(object):
       if image_d != None:
         image_dic = pickle.loads(image_d)
       else:
-        image_dic = index_api.get_image(image_id)
+        image_dic = index_image_api.get_image(image_id)
 
       image_dic['id'] = str(image_dic['_id'])
       image_dic.pop('_id')
@@ -160,13 +161,13 @@ class Images(object):
   def get_images_by_user_image_id_and_object_index(user_image_id, object_index):
     log.info('get_images_by_user_image_id_and_object_index')
     start_time = time.time()
-    index_api = Indexes()
+    index_image_api = IndexImages()
     res = GetImagesResponse()
     log.debug(user_image_id)
     log.debug(object_index)
 
     try:
-      api_res = index_api.get_images_by_user_image_id_and_object_index(user_image_id, object_index)
+      api_res = index_image_api.get_images_by_user_image_id_and_object_index(user_image_id, object_index)
       res.message = 'Successful'
       images = []
       for p in api_res.data:
@@ -186,12 +187,12 @@ class Images(object):
   def get_image_by_host_code_and_product_no(host_code, product_no):
     log.info('get_image_by_host_code_and_product_no')
     start_time = time.time()
-    index_api = Indexes()
+    index_image_api = IndexImages()
     res = GetImageResponse()
     image = Image()
 
     try:
-      api_res = index_api.get_image_by_hostcode_and_product_no(host_code, product_no)
+      api_res = index_image_api.get_image_by_hostcode_and_product_no(host_code, product_no)
       res.data = image.from_dict(api_res.data.to_dict())
       res.message = 'Successful'
       response_status = 200
@@ -208,7 +209,7 @@ class Images(object):
   def get_image_by_id(image_id):
     log.info('get_image_by_id')
     start_time = time.time()
-    index_api = Indexes()
+    index_image_api = IndexImages()
     res = GetImageResponse()
 
     try:
@@ -219,7 +220,7 @@ class Images(object):
       if image_d != None:
         image_dic = pickle.loads(image_d)
       else:
-        image_dic = index_api.get_image(image_id)
+        image_dic = index_image_api.get_image(image_id)
 
       image_dic['id'] = str(image_dic['_id'])
       image_dic.pop('_id')
