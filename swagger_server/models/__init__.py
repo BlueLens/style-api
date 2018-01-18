@@ -9,6 +9,7 @@ from .get_feed_response import GetFeedResponse
 from .get_image_response import GetImageResponse
 from .get_images_response import GetImagesResponse
 from .get_objects_by_image_id_response import GetObjectsByImageIdResponse
+from .get_objects_by_image_id_response_data import GetObjectsByImageIdResponseData
 from .get_objects_response import GetObjectsResponse
 from .get_objects_response_data import GetObjectsResponseData
 from .image import Image

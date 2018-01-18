@@ -410,10 +410,10 @@ definitions:
       score:
         type: number
         format: float
-      images:
-        type: array
-        items:
-          $ref: '#/definitions/Image'
+#      images:
+#        type: array
+#        items:
+#          $ref: '#/definitions/Image'
 
   GetImageResponse:
     type: object
@@ -447,6 +447,10 @@ definitions:
               $ref: '#/definitions/BoxObject'
           image_id:
             type: string
+          images:
+            type: array
+            items:
+              $ref: '#/definitions/SimImage'
 
   GetObjectsByImageIdResponse:
     type: object

@@ -19,6 +19,9 @@ from stylelens_object.objects import Objects
 from stylelens_image.images import Images
 
 VECTOR_SIMILARITY_THRESHHOLD = 100
+DETECT_IMAGE_RESIZE_WIDTH = 380
+DETECT_IMAGE_RESIZE_HEIGHT= 380
+
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 REDIS_SERVER = os.environ['REDIS_SEARCH_SERVER']
@@ -59,31 +62,9 @@ class Search:
     self.object_api = Objects()
     self.image_api = Images()
 
-  def search_image_file(self, image_file, offset=0, limit=5):
-
-    start_time = time.time()
-    if image_file and self.allowed_file(image_file.filename):
-      im = Image.open(image_file.stream)
-
-      file_type = image_file.filename.rsplit('.', 1)[1]
-      if 'jpg' == file_type or 'JPG' == file_type or 'jpeg' == file_type or 'JPEG' == file_type:
-        print('jpg')
-      else:
-        bg = Image.new("RGB", im.size, (255,255,255))
-        bg.paste(im, (0,0), im)
-        bg.save('file.jpg', quality=95)
-        im = bg
-      im.show()
-      size = 300, 300
-      im.thumbnail(size, Image.ANTIALIAS)
-      # im.show()
-      file_name = str(uuid.uuid4()) + '.jpg'
-      im.save(file_name)
-      feature = self.extract_feature(file_name)
-      print(feature.dtype)
-      elapsed_time = time.time() - start_time
-      self.log.info('search_image time: ' + str(elapsed_time))
-      return self.query_feature(feature.tolist(), offset=offset, limit=limit)
+  def search_image_file(self, file, offset=0, limit=5):
+    feature = self.extract_feature(file)
+    return self.get_images_by_vector(feature, offset=offset, limit=limit)
 
   def search_image_data(self, image_data, offset=0, limit=10):
 
@@ -98,9 +79,9 @@ class Search:
     print(feature.dtype)
     elapsed_time = time.time() - start_time
     self.log.info('search_image time: ' + str(elapsed_time))
-    return self.query_feature(feature, offset, limit)
+    return self.get_images_by_vector(feature, offset, limit)
 
-  def query_feature(self, vector, offset=0, limit=5):
+  def get_images_by_vector(self, vector, offset=0, limit=5):
     try:
       # Query to search vector
       start_time = time.time()
@@ -298,13 +279,13 @@ class Search:
       box_object.box = box
       boxes_array.append(box_object)
       # products = self.search_image_data(image_data, offset=products_offset, limit=products_limit)
-    else:
-      images = self.query_feature(object.feature, offset=products_offset, limit=products_limit)
+    # else:
+    #   images = self.get_images_by_vector(object.feature, offset=products_offset, limit=products_limit)
 
     local_start_time = time.time()
     elapsed_time = time.time() - local_start_time
     self.log.info('query_feature time: ' + str(elapsed_time))
-    boxes_array[best_score_index].images = images
+    # boxes_array[best_score_index].images = images
 
     elapsed_time = time.time() - start_time
     self.log.info('get_objects time: ' + str(elapsed_time))

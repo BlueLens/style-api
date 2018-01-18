@@ -12,6 +12,7 @@ from swagger_server.models.box_object import BoxObject
 from swagger_server.models.image import Image
 from stylelens_index.index_images import IndexImages
 from stylelens_index.index_objects import IndexObjects
+from stylelens_user.users import Users
 from .search import Search
 from util import utils
 
@@ -77,13 +78,11 @@ class Objects(object):
         else:
           im.save(TMP_IMG)
 
-        index_image_api = IndexImages()
-        # image = stylelens_product.Image() # Product | Product object that needs to be added to the db.
         userImage = {}
         image_url = utils.save_image_to_storage(str(uuid.uuid4()), 'user', TMP_IMG)
-        # with open(TMP_IMG, 'rb') as im_f:
-        #   img_data = im_f.read()
+
         boxes = search.get_objects(TMP_IMG)
+        images = search.search_image_file(TMP_IMG)
 
 
         # for box_obj in boxes:
@@ -92,16 +91,27 @@ class Objects(object):
         #     images.append(Image.from_dict(prod))
         #   box_obj.images = images
 
-        userImage['boxes'] = boxes
+        user_api = Users()
+
+        box_dic_list = []
+        for box in boxes:
+          b = box.to_dict()
+          box_dic_list.append(b)
+          object_id = user_api.add_object('bluehackmaster', b)
+          box.id = object_id
+
+        userImage['boxes'] = box_dic_list
         userImage['url'] = image_url
-        log.debug('before index_api.add_image')
-        id = index_image_api.add_user_image(userImage)
-        log.debug('after product_api.add_image')
-        image_id = id
+
+        image_id = user_api.add_image('bluehackmaster', userImage)
 
         res_data = GetObjectsResponseData()
         res_data.boxes = boxes
         res_data.image_id = image_id
+        images_list = []
+        for image in images:
+          images_list.append(Image().from_dict(image))
+        res_data.images = images_list
         res.message = "Successful"
         res.data = res_data
         response_status = 200

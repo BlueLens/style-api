@@ -409,10 +409,6 @@ definitions:
       score:
         type: "number"
         format: "float"
-      images:
-        type: "array"
-        items:
-          $ref: "#/definitions/Image"
   GetImageResponse:
     type: "object"
     properties:
@@ -442,7 +438,7 @@ definitions:
       message:
         type: "string"
       data:
-        $ref: "#/definitions/GetObjectsResponse_data"
+        $ref: "#/definitions/GetObjectsByImageIdResponse_data"
   SearchImageResponse:
     type: "object"
     properties:
@@ -462,6 +458,18 @@ definitions:
         items:
           $ref: "#/definitions/Image"
   GetObjectsResponse_data:
+    properties:
+      boxes:
+        type: "array"
+        items:
+          $ref: "#/definitions/BoxObject"
+      image_id:
+        type: "string"
+      images:
+        type: "array"
+        items:
+          $ref: "#/definitions/SimImage"
+  GetObjectsByImageIdResponse_data:
     properties:
       boxes:
         type: "array"
