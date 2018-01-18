@@ -62,6 +62,9 @@ class Search:
     self.object_api = Objects()
     self.image_api = Images()
 
+  def get_images_by_object_vector(self, vector, offset=0, limit=10):
+    return self.get_images_by_vector(vector, offset=offset, limit=limit)
+
   def search_image_file(self, file, offset=0, limit=5):
     feature = self.extract_feature(file)
     return self.get_images_by_vector(feature, offset=offset, limit=limit)
@@ -100,6 +103,7 @@ class Search:
     arr_i = []
     i = 0
     for d in distances:
+      self.log.debug(d)
       if d <= VECTOR_SIMILARITY_THRESHHOLD:
         if i < limit:
           arr_i.append(ids[i])
@@ -236,15 +240,20 @@ class Search:
     objects = self.object_detector.getObjects(file=image_file)
 
     boxes_array = []
+    objects_array = []
     feature = []
     best_score = -1
     best_score_index = 0
     i = 0
     for object in objects:
+      obj = {}
       box_object = BoxObject()
       box_object.class_name = object.class_name
+      obj['class_name'] = object.class_name
       box_object.class_code = object.class_code
+      obj['class_code'] = object.class_code
       box_object.score = object.score
+      obj['score'] = object.score
 
       if best_score_index < object.score:
         best_score_index = object.score
@@ -256,13 +265,22 @@ class Search:
       # self.log.debug(object.class_code)
       # self.log.debug(object.location)
       box = Box()
+      box_dic = {}
       box.left = object.location.left
+      box_dic['left'] = object.location.left
       box.right = object.location.right
+      box_dic['right'] = object.location.right
       box.top = object.location.top
+      box_dic['top'] = object.location.top
       box.bottom = object.location.bottom
+      box_dic['bottom'] = object.location.bottom
       box_object.box = box
+      obj['box'] = box_dic
+
+      obj['feature'] = object.feature
       # self.log.debug(box)
       boxes_array.append(box_object)
+      objects_array.append(obj)
       i = i + 1
 
     if best_score == -1:
@@ -289,7 +307,7 @@ class Search:
 
     elapsed_time = time.time() - start_time
     self.log.info('get_objects time: ' + str(elapsed_time))
-    return boxes_array
+    return boxes_array, objects_array
 
   def get_objects_by_product_id(self, product_id, products_limit=5):
     product = rconn.hget(REDIS_PRODUCT_HASH, product_id)

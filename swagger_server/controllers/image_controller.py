@@ -74,3 +74,14 @@ def get_image_by_id(imageId):
     :rtype: GetImageResponse
     """
     return Images.get_image_by_id(imageId)
+
+def get_images_by_object_id(objectId, offset=0, limit=10):
+    """
+    Query to search images by object id
+
+    :param objectId:
+    :type objectId: str
+
+    :rtype: GetImagesResponse
+    """
+    return Images.get_images_by_object_id(objectId, offset=offset, limit=limit)

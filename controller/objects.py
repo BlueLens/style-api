@@ -47,6 +47,7 @@ class Objects(object):
   @staticmethod
   def get_objects_by_user_image_file(file):
     search = Search(log)
+
     res = GetObjectsResponse()
 
     if file and allowed_file(file.filename):
@@ -81,24 +82,20 @@ class Objects(object):
         userImage = {}
         image_url = utils.save_image_to_storage(str(uuid.uuid4()), 'user', TMP_IMG)
 
-        boxes = search.get_objects(TMP_IMG)
+        boxes, objects = search.get_objects(TMP_IMG)
         images = search.search_image_file(TMP_IMG)
-
-
-        # for box_obj in boxes:
-        #   images = []
-        #   for prod in box_obj.images:
-        #     images.append(Image.from_dict(prod))
-        #   box_obj.images = images
 
         user_api = Users()
 
         box_dic_list = []
+        i = 0
         for box in boxes:
           b = box.to_dict()
+          b['feature'] = objects[i]['feature']
           box_dic_list.append(b)
           object_id = user_api.add_object('bluehackmaster', b)
           box.id = object_id
+          i = i + 1
 
         userImage['boxes'] = box_dic_list
         userImage['url'] = image_url

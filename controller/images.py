@@ -8,6 +8,7 @@ from swagger_server.models.get_image_response import GetImageResponse
 from swagger_server.models.image import Image
 from stylelens_index.index_images import IndexImages
 from stylelens_index.index_objects import IndexObjects
+from stylelens_user.users import Users
 
 from .search import Search
 
@@ -17,6 +18,9 @@ REDIS_INDEXED_IMAGE_LIST = 'bl:indexed:image:list'
 REDIS_INDEXED_OBJECT_HASH = 'bl_indexed_object_hash'
 REDIS_INDEXED_OBJECT_HASH_MAP = 'bl_indexed_object_hash_map'
 REDIS_INDEXED_OBJECT_LIST = 'bl:indexed:object:list'
+
+REDIS_USER_OBJECT_HASH = 'bl:user:object:hash'
+REDIS_USER_IMAGE_HASH = 'bl:user:image:hash'
 
 REDIS_SERVER = os.environ['REDIS_SEARCH_SERVER']
 REDIS_PASSWORD = os.environ['REDIS_SEARCH_PASSWORD']
@@ -67,20 +71,35 @@ class Images(object):
     return res, response_status
 
   @staticmethod
-  def get_image_from_cache(image_id):
-    hash_range = rconn.hget(REDIS_INDEXED_IMAGE_HASH_MAP, image_id)
-    if hash_range == IMAGE_HASH_RANGE_0:
-      rconn_search_image_0.hget(REDIS_INDEXED_IMAGE_HASH, image_id)
-    elif hash_range == IMAGE_HASH_RANGE_1:
-      rconn_search_image_1.hget(REDIS_INDEXED_IMAGE_HASH, image_id)
-    elif hash_range == IMAGE_HASH_RANGE_2:
-      rconn_search_image_2.hget(REDIS_INDEXED_IMAGE_HASH, image_id)
-    elif hash_range == IMAGE_HASH_RANGE_3:
-      rconn_search_image_3.hget(REDIS_INDEXED_IMAGE_HASH, image_id)
-    elif hash_range == IMAGE_HASH_RANGE_4:
-      rconn_search_image_4.hget(REDIS_INDEXED_IMAGE_HASH, image_id)
-    elif hash_range == IMAGE_HASH_RANGE_5:
-      rconn_search_image_5.hget(REDIS_INDEXED_IMAGE_HASH, image_id)
+  def get_images_by_object_id(object_id, offset=0, limit=10):
+    log.info('get_images_by_object_id')
+    search = Search(log)
+    start_time = time.time()
+    user_api = Users()
+    res = GetImageResponse()
+
+    try:
+      object_d = rconn.hget(REDIS_USER_OBJECT_HASH, object_id)
+
+      if object_d != None:
+        object= pickle.loads(object_d)
+      else:
+        object= user_api.get_object(object_id)
+
+      images_list = []
+      images = search.get_images_by_object_vector(object['feature'])
+      for image in images:
+        images_list.append(Image().from_dict(image))
+
+      res.data = images_list
+      res.message = 'Successful'
+      response_status = 200
+
+    except Exception as e:
+      log.error(str(e))
+      response_status = 400
+
+    return res, response_status
 
   @staticmethod
   def get_images_by_user_image_file(file, offset=0, limit=5):

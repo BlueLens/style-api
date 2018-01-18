@@ -2,7 +2,7 @@
 
 export ORG="bluelens"
 export IMAGE="style-api"
-export TAG='prod1'
+export TAG='prod'
 export NAMESPACE="prod"
 
 docker login

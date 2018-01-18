@@ -46,6 +46,16 @@ class TestImageController(BaseTestCase):
                                     query_string=query_string)
         self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
 
+    def test_get_images_by_object_id(self):
+        """
+        Test case for get_images_by_object_id
+
+        Query to search images by object id
+        """
+        response = self.client.open('//images/objects/{objectId}'.format(objectId='objectId_example'),
+                                    method='GET')
+        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+
     def test_get_images_by_user_image_file(self):
         """
         Test case for get_images_by_user_image_file

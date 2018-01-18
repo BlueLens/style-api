@@ -111,6 +111,42 @@ paths:
           description: "Invalid ID supplied"
         404:
           description: "Image not found"
+
+  /images/objects/{objectId}:
+    get:
+      tags:
+      - image
+      summary: Query to search images by object id
+      description: ''
+      operationId: getImagesByObjectId
+      produces:
+      - "application/json"
+      parameters:
+      - name: objectId
+        in: "path"
+        description: ""
+        required: true
+        type: string
+      - name: "offset"
+        in: "query"
+        description: ""
+        required: false
+        type: integer
+        format: int32
+      - name: "limit"
+        in: "query"
+        description: ""
+        required: false
+        type: integer
+        format: int32
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: "#/definitions/GetImagesResponse"
+        400:
+          description: Invalid input
+
   /images/userImages:
     post:
       tags:

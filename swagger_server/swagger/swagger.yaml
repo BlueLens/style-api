@@ -115,6 +115,29 @@ paths:
         404:
           description: "Image not found"
       x-swagger-router-controller: "swagger_server.controllers.image_controller"
+  /images/objects/{objectId}:
+    get:
+      tags:
+      - "image"
+      summary: "Query to search images by object id"
+      description: ""
+      operationId: "get_images_by_object_id"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "objectId"
+        in: "path"
+        description: ""
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/GetImagesResponse"
+        400:
+          description: "Invalid input"
+      x-swagger-router-controller: "swagger_server.controllers.image_controller"
   /images/userImages:
     post:
       tags:
