@@ -24,6 +24,10 @@ REDIS_INDEXED_IMAGE_LIST = 'bl:indexed:image:list'
 REDIS_INDEXED_OBJECT_HASH = 'bl_indexed_object_hash'
 REDIS_INDEXED_OBJECT_LIST = 'bl:indexed:object:list'
 
+REDIS_USER_OBJECT_HASH = 'bl:user:object:hash'
+REDIS_USER_IMAGE_HASH = 'bl:user:image:hash'
+REDIS_FEED_IMAGE_HASH = 'bl:feed:image:hash'
+
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 options = {
@@ -95,6 +99,7 @@ class Objects(object):
           box_dic_list.append(b)
           object_id = user_api.add_object('bluehackmaster', b)
           box.id = object_id
+          rconn.hset(REDIS_USER_OBJECT_HASH, object_id, pickle.dumps(b))
           i = i + 1
 
         userImage['boxes'] = box_dic_list
@@ -106,10 +111,15 @@ class Objects(object):
         res_data.boxes = boxes
         res_data.image_id = image_id
         images_list = []
-        for image in images:
-          images_list.append(Image().from_dict(image))
-        res_data.images = images_list
-        res.message = "Successful"
+
+        if images is None:
+          res.message = "Successful, but there is no similar images"
+          res_data.images = None
+        else:
+          for image in images:
+            images_list.append(Image().from_dict(image))
+          res.message = "Successful"
+          res_data.images = images_list
         res.data = res_data
         response_status = 200
 

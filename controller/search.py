@@ -103,7 +103,7 @@ class Search:
     arr_i = []
     i = 0
     for d in distances:
-      self.log.debug(d)
+      print(d)
       if d <= VECTOR_SIMILARITY_THRESHHOLD:
         if i < limit:
           arr_i.append(ids[i])
@@ -115,7 +115,10 @@ class Search:
       ids = [int(x) for x in arr_i]
 
       try:
+        start_time = time.time()
         objects = self.object_api.get_objects_by_indexes(ids)
+        elapsed_time = time.time() - start_time
+        print(elapsed_time)
         images = self.get_images_from_objects(objects)
         return images
       except Exception as e:
@@ -142,7 +145,10 @@ class Search:
 
     ids = list(set(image_ids))
     try:
+      start_time = time.time()
       _images = self.image_api.get_images_by_ids(ids)
+      elapsed_time = time.time() - start_time
+      print(elapsed_time)
       images = []
       for image in _images:
         image['id'] = str(image.pop('_id'))

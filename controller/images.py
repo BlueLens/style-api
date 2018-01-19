@@ -88,12 +88,18 @@ class Images(object):
 
       images_list = []
       images = search.get_images_by_object_vector(object['feature'])
-      for image in images:
-        images_list.append(Image().from_dict(image))
 
-      res.data = images_list
-      res.message = 'Successful'
-      response_status = 200
+      if images is None:
+        res.message = "Successful, but there is no similar images"
+        res.data = None
+        response_status = 400
+      else:
+        for image in images:
+          images_list.append(Image().from_dict(image))
+
+        res.message = "Successful"
+        res.data = images_list
+        response_status = 200
 
     except Exception as e:
       log.error(str(e))
