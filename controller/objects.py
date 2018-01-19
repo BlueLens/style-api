@@ -25,6 +25,7 @@ REDIS_INDEXED_OBJECT_HASH = 'bl_indexed_object_hash'
 REDIS_INDEXED_OBJECT_LIST = 'bl:indexed:object:list'
 
 REDIS_USER_OBJECT_HASH = 'bl:user:object:hash'
+REDIS_USER_OBJECT_QUEUE = 'bl:user:object:queue'
 REDIS_USER_IMAGE_HASH = 'bl:user:image:hash'
 REDIS_FEED_IMAGE_HASH = 'bl:feed:image:hash'
 
@@ -100,6 +101,7 @@ class Objects(object):
           object_id = user_api.add_object('bluehackmaster', b)
           box.id = object_id
           rconn.hset(REDIS_USER_OBJECT_HASH, object_id, pickle.dumps(b))
+          rconn.lpush(REDIS_USER_OBJECT_QUEUE, object_id)
           i = i + 1
 
         userImage['boxes'] = box_dic_list
