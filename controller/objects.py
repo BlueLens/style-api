@@ -29,6 +29,10 @@ REDIS_USER_OBJECT_QUEUE = 'bl:user:object:queue'
 REDIS_USER_IMAGE_HASH = 'bl:user:image:hash'
 REDIS_FEED_IMAGE_HASH = 'bl:feed:image:hash'
 
+REDIS_LOG_SEARCH_IMAGE_FILE_QUEUE = 'bl:log:search:image:file'
+REDIS_LOG_SEARCH_IMAGE_ID_QUEUE = 'bl:log:search:image:id'
+REDIS_LOG_SEARCH_OBJECT_ID_QUEUE = 'bl:log:search:object:id'
+
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 options = {
@@ -93,6 +97,7 @@ class Objects(object):
         user_api = Users()
 
         box_dic_list = []
+        obj_ids = []
         i = 0
         for box in boxes:
           b = box.to_dict()
@@ -100,6 +105,7 @@ class Objects(object):
           box_dic_list.append(b)
           object_id = user_api.add_object('bluehackmaster', b)
           box.id = object_id
+          obj_ids.append(object_id)
           rconn.hset(REDIS_USER_OBJECT_HASH, object_id, pickle.dumps(b))
           rconn.lpush(REDIS_USER_OBJECT_QUEUE, object_id)
           i = i + 1
@@ -108,6 +114,13 @@ class Objects(object):
         userImage['url'] = image_url
 
         image_id = user_api.add_image('bluehackmaster', userImage)
+
+        userImage['device_id'] = 'bluehackmaster'
+        userImage['image_id'] = image_id
+        userImage.pop('boxes')
+        userImage['objects'] = obj_ids
+
+        rconn.lpush(REDIS_LOG_SEARCH_IMAGE_FILE_QUEUE, pickle.dumps(userImage))
 
         res_data = GetObjectsResponseData()
         res_data.boxes = boxes

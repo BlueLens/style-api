@@ -22,6 +22,10 @@ REDIS_INDEXED_OBJECT_LIST = 'bl:indexed:object:list'
 REDIS_USER_OBJECT_HASH = 'bl:user:object:hash'
 REDIS_USER_IMAGE_HASH = 'bl:user:image:hash'
 
+REDIS_LOG_SEARCH_IMAGE_FILE_QUEUE = 'bl:log:search:image:file'
+REDIS_LOG_SEARCH_IMAGE_ID_QUEUE = 'bl:log:search:image:id'
+REDIS_LOG_SEARCH_OBJECT_ID_QUEUE = 'bl:log:search:object:id'
+
 REDIS_SERVER = os.environ['REDIS_SEARCH_SERVER']
 REDIS_PASSWORD = os.environ['REDIS_SEARCH_PASSWORD']
 
@@ -74,21 +78,23 @@ class Images(object):
   def get_images_by_object_id(object_id, offset=0, limit=10):
     log.info('get_images_by_object_id')
     search = Search(log)
-    start_time = time.time()
     user_api = Users()
     res = GetImageResponse()
 
+    log_dic = {}
+    log_dic['device_id'] = 'bluehack'
+    log_dic['object_id'] = object_id
+    rconn.lpush(REDIS_LOG_SEARCH_OBJECT_ID_QUEUE, pickle.dumps(log_dic))
     try:
       object_d = rconn.hget(REDIS_USER_OBJECT_HASH, object_id)
 
       if object_d != None:
-        object= pickle.loads(object_d)
+        images = pickle.loads(object_d)
       else:
         object= user_api.get_object(object_id)
+        images = search.get_images_by_object_vector(object['feature'], limit=limit)
 
       images_list = []
-      images = search.get_images_by_object_vector(object['feature'])
-
       if images is None:
         res.message = "Successful, but there is no similar images"
         res.data = None
