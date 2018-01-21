@@ -82,7 +82,7 @@ class Images(object):
     res = GetImageResponse()
 
     log_dic = {}
-    log_dic['device_id'] = 'bluehack'
+    log_dic['device_id'] = 'bluehackmaster'
     log_dic['object_id'] = object_id
     rconn.lpush(REDIS_LOG_SEARCH_OBJECT_ID_QUEUE, pickle.dumps(log_dic))
     try:

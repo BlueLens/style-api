@@ -18,7 +18,7 @@ from swagger_server.models.box import Box
 from stylelens_object.objects import Objects
 from stylelens_image.images import Images
 
-VECTOR_SIMILARITY_THRESHHOLD = 100
+VECTOR_SIMILARITY_THRESHHOLD = 250
 DETECT_IMAGE_RESIZE_WIDTH = 380
 DETECT_IMAGE_RESIZE_HEIGHT= 380
 
