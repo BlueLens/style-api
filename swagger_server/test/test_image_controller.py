@@ -52,8 +52,11 @@ class TestImageController(BaseTestCase):
 
         Query to search images by object id
         """
+        query_string = [('offset', 56),
+                        ('limit', 56)]
         response = self.client.open('//images/objects/{objectId}'.format(objectId='objectId_example'),
-                                    method='GET')
+                                    method='GET',
+                                    query_string=query_string)
         self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
 
     def test_get_images_by_user_image_file(self):

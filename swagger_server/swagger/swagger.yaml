@@ -130,6 +130,18 @@ paths:
         description: ""
         required: true
         type: "string"
+      - name: "offset"
+        in: "query"
+        description: ""
+        required: false
+        type: "integer"
+        format: "int32"
+      - name: "limit"
+        in: "query"
+        description: ""
+        required: false
+        type: "integer"
+        format: "int32"
       responses:
         200:
           description: "successful operation"

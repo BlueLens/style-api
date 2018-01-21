@@ -45,9 +45,8 @@ class Images(object):
     super().__init__()
 
   @staticmethod
-  def get_images(image_id, offset, limit):
-    log.info('get_images_by_id')
-    start_time = time.time()
+  def get_images(image_id, offset=0, limit=10):
+    log.info('get_images:' + image_id)
     index_image_api = IndexImages()
     res = GetImageResponse()
 
@@ -55,16 +54,19 @@ class Images(object):
       image_d = rconn.hget(REDIS_INDEXED_IMAGE_HASH, image_id)
 
       if image_d != None:
-        image_dic = pickle.loads(image_d)
+        images_dic = pickle.loads(image_d)
       else:
-        image_dic = index_image_api.get_image(image_id)
+        images_dic = index_image_api.get_sim_images(image_id)
 
-      image_dic['id'] = str(image_dic['_id'])
-      image_dic.pop('_id')
-      img = Image()
-      image = img.from_dict(image_dic)
+      images = []
+      for image in images_dic:
+        img = Image()
+        image = img.from_dict(image)
+        images.append(image)
 
-      res.data = image.images
+      rconn.hset(REDIS_INDEXED_IMAGE_HASH, image_id, pickle.dumps(images_dic))
+
+      res.data = images
       res.message = 'Successful'
       response_status = 200
 

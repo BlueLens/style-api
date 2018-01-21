@@ -502,6 +502,10 @@ definitions:
               $ref: '#/definitions/BoxObject'
           image_id:
             type: string
+          images:
+            type: array
+            items:
+              $ref: '#/definitions/SimImage'
 
   SearchImageResponse:
     type: object

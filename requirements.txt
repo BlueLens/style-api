@@ -36,7 +36,7 @@ six==1.11.0
 stylelens-detect==1.0.2
 stylelens-feature==1.0.11
 stylelens-image==0.0.9
-stylelens-index==1.0.17
+stylelens-index==1.0.18
 stylelens-object==0.0.39
 stylelens-search-vector==1.0.10
 stylelens-user==0.0.4

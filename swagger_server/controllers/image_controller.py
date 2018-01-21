@@ -23,7 +23,7 @@ def get_images_by_user_image_file(file=None, offset=0, limit=5):
     """
     return Images.get_images_by_user_image_file(file, offset, limit)
 
-def get_images(imageId, offset=None, limit=None):
+def get_images(imageId, offset=0, limit=10):
     """
     Get Images by imageId
     Returns similar Images with imageId
