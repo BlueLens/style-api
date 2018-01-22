@@ -170,20 +170,23 @@ class Objects(object):
     try:
       image_d = rconn.hget(REDIS_INDEXED_IMAGE_HASH, image_id)
       if image_d != None:
-        image_dic = pickle.loads(image_d)
-        boxes_list = image_dic['objects']
-        boxes = []
-        for b in boxes_list:
-          box_object = BoxObject()
-          b['id'] = str(b['_id'])
-          box = box_object.from_dict(b)
-          boxes.append(box)
-
+        image = pickle.loads(image_d)
       else:
-        boxes, image = search.get_indexed_image(image_id)
+        image = search.get_indexed_image(image_id)
+
+      boxes_array = []
+      if image is not None:
+        objects = image.get('objects')
+
+        if objects is not None:
+          for object in objects:
+            object['id'] = str(object['_id'])
+            boxes_array.append(BoxObject.from_dict(object))
+
+      rconn.hset(REDIS_INDEXED_IMAGE_HASH, image_id, pickle.dumps(image))
 
       res_data = GetObjectsResponseData()
-      res_data.boxes = boxes
+      res_data.boxes = boxes_array
 
       images = image.get('images')
       images_list = []

@@ -321,18 +321,11 @@ class Search:
   def get_indexed_image(self, image_id):
     try:
       image = self.index_image_api.get_image(image_id)
-      objects = image.get('objects')
-
-      boxes_array = []
-      if objects is not None:
-        for object in objects:
-          object['id'] = str(object['_id'])
-          boxes_array.append(BoxObject.from_dict(object))
     except Exception as e:
       self.log.error(str(e))
-      return None, None
+      return None
 
-    return boxes_array, image
+    return image
 
   def get_products_by_product_id(self, product_id, offset=0, limit=5):
     if rconn.hexists(REDIS_PRODUCTS_BY_PRODUCT_HASH, product_id):
