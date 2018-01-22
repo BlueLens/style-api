@@ -10,8 +10,6 @@ from swagger_server.models.get_objects_response_data import GetObjectsResponseDa
 from swagger_server.models.get_objects_by_image_id_response import GetObjectsByImageIdResponse
 from swagger_server.models.box_object import BoxObject
 from swagger_server.models.image import Image
-from stylelens_index.index_images import IndexImages
-from stylelens_index.index_objects import IndexObjects
 from stylelens_user.users import Users
 from .search import Search
 from util import utils
@@ -170,8 +168,6 @@ class Objects(object):
     res = GetObjectsByImageIdResponse()
 
     try:
-      res_data = GetObjectsResponseData()
-
       image_d = rconn.hget(REDIS_INDEXED_IMAGE_HASH, image_id)
       if image_d != None:
         image_dic = pickle.loads(image_d)
@@ -184,11 +180,22 @@ class Objects(object):
           boxes.append(box)
 
       else:
-        boxes = search.get_objects_by_image_id(image_id)
+        boxes, image = search.get_indexed_image(image_id)
 
-      res_data.image_id = image_id
+      res_data = GetObjectsResponseData()
       res_data.boxes = boxes
-      res.message = "Successful"
+
+      images = image.get('images')
+      images_list = []
+      if images is None:
+        res.message = "Successful, but there is no similar images"
+        res_data.images = None
+      else:
+        for image in images:
+          images_list.append(Image().from_dict(image))
+        res.message = "Successful"
+        res_data.images = images_list
+
       res.data = res_data
       response_status = 200
 

@@ -17,6 +17,8 @@ from swagger_server.models.box_object import BoxObject
 from swagger_server.models.box import Box
 from stylelens_object.objects import Objects
 from stylelens_image.images import Images
+from stylelens_index.index_images import IndexImages
+from stylelens_index.index_objects import IndexObjects
 
 VECTOR_SIMILARITY_THRESHHOLD = 250
 DETECT_IMAGE_RESIZE_WIDTH = 380
@@ -61,6 +63,7 @@ class Search:
     self.object_detector = ObjectDetector()
     self.object_api = Objects()
     self.image_api = Images()
+    self.index_image_api = IndexImages()
 
   def get_images_by_object_vector(self, vector, offset=0, limit=10):
     return self.get_images_by_vector(vector, offset=offset, limit=limit)
@@ -315,16 +318,21 @@ class Search:
     self.log.info('get_objects time: ' + str(elapsed_time))
     return boxes_array, objects_array
 
-  def get_objects_by_product_id(self, product_id, products_limit=5):
-    product = rconn.hget(REDIS_PRODUCT_HASH, product_id)
-    product = pickle.loads(product)
+  def get_indexed_image(self, image_id):
     try:
-      f = urllib.request.urlopen(product['main_image_mobile_full'])
+      image = self.index_image_api.get_image(image_id)
+      objects = image.get('objects')
+
+      boxes_array = []
+      if objects is not None:
+        for object in objects:
+          object['id'] = str(object['_id'])
+          boxes_array.append(BoxObject.from_dict(object))
     except Exception as e:
       self.log.error(str(e))
-    image_data = f.fp.read()
-    boxes = self.get_objects(image_data, products_limit)
-    return boxes
+      return None, None
+
+    return boxes_array, image
 
   def get_products_by_product_id(self, product_id, offset=0, limit=5):
     if rconn.hexists(REDIS_PRODUCTS_BY_PRODUCT_HASH, product_id):

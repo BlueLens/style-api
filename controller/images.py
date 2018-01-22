@@ -12,6 +12,7 @@ from stylelens_user.users import Users
 
 from .search import Search
 
+REDIS_INDEXED_SIM_IMAGES_HASH = 'bl_indexed_image_hash'
 REDIS_INDEXED_IMAGE_HASH = 'bl_indexed_image_hash'
 REDIS_INDEXED_IMAGE_HASH_MAP = 'bl_indexed_image_hash_map'
 REDIS_INDEXED_IMAGE_LIST = 'bl:indexed:image:list'
@@ -51,7 +52,7 @@ class Images(object):
     res = GetImageResponse()
 
     try:
-      image_d = rconn.hget(REDIS_INDEXED_IMAGE_HASH, image_id)
+      image_d = rconn.hget(REDIS_INDEXED_SIM_IMAGES_HASH, image_id)
 
       if image_d != None:
         images_dic = pickle.loads(image_d)
@@ -64,7 +65,7 @@ class Images(object):
         image = img.from_dict(image)
         images.append(image)
 
-      rconn.hset(REDIS_INDEXED_IMAGE_HASH, image_id, pickle.dumps(images_dic))
+      rconn.hset(REDIS_INDEXED_SIM_IMAGES_HASH, image_id, pickle.dumps(images_dic))
 
       res.data = images
       res.message = 'Successful'

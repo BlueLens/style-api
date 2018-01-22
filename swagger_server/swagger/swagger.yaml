@@ -473,7 +473,7 @@ definitions:
       message:
         type: "string"
       data:
-        $ref: "#/definitions/GetObjectsByImageIdResponse_data"
+        $ref: "#/definitions/GetObjectsResponse_data"
   SearchImageResponse:
     type: "object"
     properties:
@@ -504,14 +504,6 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/SimImage"
-  GetObjectsByImageIdResponse_data:
-    properties:
-      boxes:
-        type: "array"
-        items:
-          $ref: "#/definitions/BoxObject"
-      image_id:
-        type: "string"
 externalDocs:
   description: "Find out more about BlueLens"
   url: "http://bluelens.io"
