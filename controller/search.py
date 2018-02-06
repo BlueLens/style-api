@@ -19,6 +19,7 @@ from stylelens_object.objects import Objects
 from stylelens_image.images import Images
 from stylelens_index.index_images import IndexImages
 from stylelens_index.index_objects import IndexObjects
+from stylelens_product.products import Products
 
 VECTOR_SIMILARITY_THRESHHOLD = 250
 DETECT_IMAGE_RESIZE_WIDTH = 380
@@ -125,7 +126,7 @@ class Search:
         images = self.get_images_from_objects(objects)
         return images
       except Exception as e:
-        self.log.error('Trying Objects.get_objects_by_indexex():' + str(e))
+        self.log.error('Trying Objects.get_objects_by_indexes():' + str(e))
         return None
 
     # obj_ids = self.get_object_ids(arr_i)
@@ -347,3 +348,17 @@ class Search:
           return box.products
     return {}
 
+  def get_products_by_keyword(self, keyword, offset=0, limit=100):
+    self.log.debug('get_products_by_keyword')
+    product_api = Products()
+    try:
+      total_count = product_api.get_products_count_by_keyword(keyword)
+    except Exception as e:
+      self.log.error("Exception when calling get_products_count_by_keyword: %s\n" % e)
+
+    try:
+      products = product_api.get_products_by_keyword(keyword, only_text=False, offset=offset, limit=limit)
+    except Exception as e:
+      self.log.error("Exception when calling get_products_by_keyword: %s\n" % e)
+
+    return total_count, products

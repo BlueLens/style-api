@@ -38,6 +38,7 @@ stylelens-feature==1.0.11
 stylelens-image==0.0.9
 stylelens-index==1.0.18
 stylelens-object==0.0.39
+stylelens-product==1.0.76
 stylelens-search-vector==1.0.10
 stylelens-user==0.0.4
 swagger-spec-validator==2.1.0

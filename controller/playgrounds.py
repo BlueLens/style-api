@@ -8,9 +8,13 @@ from bluelens_log import Logging
 from swagger_server.models.get_objects_response import GetObjectsResponse
 from swagger_server.models.get_objects_response_data import GetObjectsResponseData
 from swagger_server.models.get_objects_by_image_id_response import GetObjectsByImageIdResponse
+from swagger_server.models.get_images_by_keyword_response import GetImagesByKeywordResponse
+from swagger_server.models.get_images_by_keyword_response_data import GetImagesByKeywordResponseData
+from swagger_server.models.simple_image import SimpleImage
 from swagger_server.models.box_object import BoxObject
 from swagger_server.models.image import Image
 from .playground import Playground
+from .search import Search
 from util import utils
 
 REDIS_SERVER = os.environ['REDIS_SEARCH_SERVER']
@@ -158,3 +162,31 @@ class Playgrounds(object):
       response_status = 400
 
     return res, response_status
+
+  def get_playground_images_by_keyword(keyword, offset=0, limit=100):
+    search = Search(log)
+    res = GetImagesByKeywordResponse()
+
+    try:
+      res_data = GetImagesByKeywordResponseData()
+
+      count, products = search.get_products_by_keyword(keyword, offset=offset, limit=limit)
+
+      res_data.total_count = count
+      images = []
+      for p in products:
+        p['id'] = p.get('_id')
+        images.append(SimpleImage().from_dict(p))
+
+      res_data.images = images
+      res.message = "Successful"
+      res.data = res_data
+      response_status = 200
+
+    except Exception as e:
+      log.error(str(e))
+      res.message = str(e)
+      response_status = 400
+
+    return res, response_status
+
