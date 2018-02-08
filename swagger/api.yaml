@@ -333,6 +333,11 @@ paths:
         description: ""
         required: false
         type: string
+      - name: categoryName
+        in: "query"
+        description: ""
+        required: false
+        type: string
       - name: "offset"
         in: "query"
         description: ""
@@ -350,6 +355,81 @@ paths:
           description: successful operation
           schema:
             $ref: '#/definitions/GetImagesByKeywordResponse'
+        400:
+          description: Invalid input
+
+  /playgrounds/images/datasets/{source}/categories:
+    get:
+      tags:
+      - playground
+      summary: Query to search multiple objects
+      description: ''
+      operationId: getImagesDatasetByCategory
+      produces:
+      - "application/json"
+      parameters:
+      - name: "source"
+        in: "path"
+        description: ""
+        required: true
+        type: string
+      - name: category
+        in: "query"
+        description: ""
+        required: false
+        type: string
+      - name: "offset"
+        in: "query"
+        description: ""
+        required: false
+        type: integer
+        format: int32
+      - name: "limit"
+        in: "query"
+        description: ""
+        required: false
+        type: integer
+        format: int32
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/GetImagesByCategoryResponse'
+        400:
+          description: Invalid input
+  /playgrounds/images/datasets/{source}:
+    post:
+      tags:
+      - playground
+      summary: Update image
+      description: ''
+      operationId: updateImagesDatasetByIds
+      produces:
+      - "application/json"
+      parameters:
+      - name: "source"
+        in: "path"
+        description: ""
+        required: true
+        type: string
+      - name: "ids"
+        in: "query"
+        description: ""
+        required: true
+        type: array
+        items:
+          type: string
+      - name: "valid"
+        in: "query"
+        description: ""
+        required: true
+        type: boolean
+
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/UpdateImageDatasetResponse'
         400:
           description: Invalid input
 
@@ -483,6 +563,46 @@ definitions:
         type: string
         description: "Mobile thumbnail size of image url"
       version:
+        type: string
+
+  BoxDataset:
+    type: object
+    properties:
+      x1:
+        type: number
+        format: float
+      y1:
+        type: number
+        format: float
+      x2:
+        type: number
+        format: float
+      y2:
+        type: number
+        format: float
+
+  ImageDataset:
+    type: object
+    properties:
+      id:
+        type: string
+      bbox:
+        $ref: '#/definitions/BoxDataset'
+      category_class:
+        type: string
+      category_name:
+        type: string
+      height:
+        type: integer
+        format: int32
+      width:
+        type: integer
+        format: int32
+      source:
+        type: string
+      url:
+        type: string
+      url_with_box:
         type: string
 
   ImagesArray:
@@ -622,6 +742,27 @@ definitions:
             type: array
             items:
               $ref: '#/definitions/SimpleImage'
+
+  GetImagesByCategoryResponse:
+    type: object
+    properties:
+      message:
+        type: string
+      data:
+        type: object
+        properties:
+          total_count:
+            type: string
+          images:
+            type: array
+            items:
+              $ref: '#/definitions/ImageDataset'
+
+  UpdateImageDatasetResponse:
+    type: object
+    properties:
+      message:
+        type: string
 
 externalDocs:
   description: Find out more about BlueLens

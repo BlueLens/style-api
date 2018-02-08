@@ -10,9 +10,13 @@ from swagger_server.models.get_objects_response_data import GetObjectsResponseDa
 from swagger_server.models.get_objects_by_image_id_response import GetObjectsByImageIdResponse
 from swagger_server.models.get_images_by_keyword_response import GetImagesByKeywordResponse
 from swagger_server.models.get_images_by_keyword_response_data import GetImagesByKeywordResponseData
+from swagger_server.models.get_images_by_category_response import GetImagesByCategoryResponse
+from swagger_server.models.get_images_by_category_response_data import GetImagesByCategoryResponseData
+from swagger_server.models.update_image_dataset_response import UpdateImageDatasetResponse
 from swagger_server.models.simple_image import SimpleImage
 from swagger_server.models.box_object import BoxObject
-from swagger_server.models.image import Image
+from swagger_server.models.image_dataset import ImageDataset
+from stylelens_dataset.images import Images
 from .playground import Playground
 from .search import Search
 from util import utils
@@ -190,3 +194,47 @@ class Playgrounds(object):
 
     return res, response_status
 
+  def get_playground_images_by_category(source, category=None, offset=0, limit=100):
+    image_api = Images()
+    res = GetImagesByCategoryResponse()
+
+    try:
+      res_data = GetImagesByCategoryResponseData()
+
+      count = image_api.get_images_count_by_category_name(category_name=category)
+
+      images = image_api.get_images_by_category_name(category_name=category, offset=offset, limit=limit)
+
+      res_data.total_count = count
+      imgs = []
+      for i in images:
+        i['id'] = i.get('_id')
+        imgs.append(ImageDataset().from_dict(i))
+
+      res_data.images = imgs
+      res.message = "Successful"
+      res.data = res_data
+      response_status = 200
+
+    except Exception as e:
+      log.error(str(e))
+      res.message = str(e)
+      response_status = 400
+
+    return res, response_status
+
+  def update_images_dataset_by_ids(source, ids, valid=True):
+    image_api = Images()
+    res = UpdateImageDatasetResponse()
+
+    try:
+      image_api.validate_images(ids, valid)
+      res.message = "Successful"
+      response_status = 200
+
+    except Exception as e:
+      log.error(str(e))
+      res.message = str(e)
+      response_status = 400
+
+    return res, response_status

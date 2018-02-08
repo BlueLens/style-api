@@ -2,8 +2,10 @@
 
 from __future__ import absolute_import
 
+from swagger_server.models.get_images_by_category_response import GetImagesByCategoryResponse
 from swagger_server.models.get_images_by_keyword_response import GetImagesByKeywordResponse
 from swagger_server.models.get_objects_response import GetObjectsResponse
+from swagger_server.models.update_image_dataset_response import UpdateImageDatasetResponse
 from . import BaseTestCase
 from six import BytesIO
 from flask import json
@@ -19,9 +21,24 @@ class TestPlaygroundController(BaseTestCase):
         Query to search multiple objects
         """
         query_string = [('keyword', 'keyword_example'),
+                        ('categoryName', 'categoryName_example'),
                         ('offset', 56),
                         ('limit', 56)]
         response = self.client.open('//playgrounds/images',
+                                    method='GET',
+                                    query_string=query_string)
+        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+
+    def test_get_images_dataset_by_category(self):
+        """
+        Test case for get_images_dataset_by_category
+
+        Query to search multiple objects
+        """
+        query_string = [('category', 'category_example'),
+                        ('offset', 56),
+                        ('limit', 56)]
+        response = self.client.open('//playgrounds/images/datasets/{source}/categories'.format(source='source_example'),
                                     method='GET',
                                     query_string=query_string)
         self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
@@ -37,6 +54,19 @@ class TestPlaygroundController(BaseTestCase):
                                     method='POST',
                                     data=data,
                                     content_type='multipart/form-data')
+        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+
+    def test_update_images_dataset_by_ids(self):
+        """
+        Test case for update_images_dataset_by_ids
+
+        Update image
+        """
+        query_string = [('ids', 'ids_example'),
+                        ('valid', true)]
+        response = self.client.open('//playgrounds/images/datasets/{source}'.format(source='source_example'),
+                                    method='POST',
+                                    query_string=query_string)
         self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
 
 

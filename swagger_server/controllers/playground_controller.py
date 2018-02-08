@@ -22,6 +22,23 @@ def get_images_by_keyword(keyword=None, offset=None, limit=None):
     """
     return Playgrounds.get_playground_images_by_keyword(keyword, offset=offset, limit=limit)
 
+def get_images_dataset_by_category(source, category=None, offset=None, limit=None):
+    """
+    Query to search multiple objects
+
+    :param source:
+    :type source: str
+    :param category:
+    :type category: str
+    :param offset:
+    :type offset: int
+    :param limit:
+    :type limit: int
+
+    :rtype: GetImagesByCategoryResponse
+    """
+    return Playgrounds.get_playground_images_by_category(source, category=category, offset=offset, limit=limit)
+
 def get_playground_objects_by_user_image_file(file):
     """
     
@@ -32,3 +49,18 @@ def get_playground_objects_by_user_image_file(file):
     :rtype: GetObjectsResponse
     """
     return Playgrounds.get_playground_objects_by_user_image_file(file)
+
+def update_images_dataset_by_ids(source, ids, valid):
+    """
+    Update image
+
+    :param source:
+    :type source: str
+    :param ids:
+    :type ids: List[str]
+    :param valid:
+    :type valid: bool
+
+    :rtype: UpdateImageDatasetResponse
+    """
+    return Playgrounds.update_images_dataset_by_ids(source, ids, valid)

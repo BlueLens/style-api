@@ -362,3 +362,4 @@ class Search:
       self.log.error("Exception when calling get_products_by_keyword: %s\n" % e)
 
     return total_count, products
+
