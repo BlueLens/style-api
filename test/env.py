@@ -1,0 +1,1 @@
+HOST = 'http://api-prod.stylelens.io'
