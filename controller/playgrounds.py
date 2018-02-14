@@ -12,6 +12,8 @@ from swagger_server.models.get_images_by_keyword_response import GetImagesByKeyw
 from swagger_server.models.get_images_by_keyword_response_data import GetImagesByKeywordResponseData
 from swagger_server.models.get_images_by_category_response import GetImagesByCategoryResponse
 from swagger_server.models.get_images_by_category_response_data import GetImagesByCategoryResponseData
+from swagger_server.models.get_images_categories_counts_by_category_response import GetImagesCategoriesCountsByCategoryResponse
+from swagger_server.models.get_images_categories_counts_by_category_response_data import GetImagesCategoriesCountsByCategoryResponseData
 from swagger_server.models.update_image_dataset_response import UpdateImageDatasetResponse
 from swagger_server.models.simple_image import SimpleImage
 from swagger_server.models.box_object import BoxObject
@@ -212,6 +214,32 @@ class Playgrounds(object):
         imgs.append(ImageDataset().from_dict(i))
 
       res_data.images = imgs
+      res.message = "Successful"
+      res.data = res_data
+      response_status = 200
+
+    except Exception as e:
+      log.error(str(e))
+      res.message = str(e)
+      response_status = 400
+
+    return res, response_status
+
+  def get_images_dataset_categories_counts_by_category(source, category=None):
+    image_api = Images()
+    res = GetImagesCategoriesCountsByCategoryResponse()
+
+    try:
+      res_data = GetImagesCategoriesCountsByCategoryResponseData()
+
+      total_count = image_api.get_images_count_by_category_name(category_name=category)
+      valid_count = image_api.get_images_count_by_category_name(category_name=category, valid=True)
+      invalid_count = image_api.get_images_count_by_category_name(category_name=category, valid=False)
+
+      res_data.total_count = total_count
+      res_data.valid_count = valid_count
+      res_data.invalid_count = invalid_count
+
       res.message = "Successful"
       res.data = res_data
       response_status = 200

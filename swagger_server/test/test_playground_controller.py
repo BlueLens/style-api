@@ -4,6 +4,7 @@ from __future__ import absolute_import
 
 from swagger_server.models.get_images_by_category_response import GetImagesByCategoryResponse
 from swagger_server.models.get_images_by_keyword_response import GetImagesByKeywordResponse
+from swagger_server.models.get_images_categories_counts_by_category_response import GetImagesCategoriesCountsByCategoryResponse
 from swagger_server.models.get_objects_response import GetObjectsResponse
 from swagger_server.models.update_image_dataset_response import UpdateImageDatasetResponse
 from . import BaseTestCase
@@ -39,6 +40,18 @@ class TestPlaygroundController(BaseTestCase):
                         ('offset', 56),
                         ('limit', 56)]
         response = self.client.open('//playgrounds/images/datasets/{source}/categories'.format(source='source_example'),
+                                    method='GET',
+                                    query_string=query_string)
+        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+
+    def test_get_images_dataset_categories_counts_by_category(self):
+        """
+        Test case for get_images_dataset_categories_counts_by_category
+
+        Query to search category counts
+        """
+        query_string = [('category', 'category_example')]
+        response = self.client.open('//playgrounds/images/datasets/{source}/categories/counts'.format(source='source_example'),
                                     method='GET',
                                     query_string=query_string)
         self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
