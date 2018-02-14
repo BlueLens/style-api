@@ -401,6 +401,34 @@ paths:
         400:
           description: "Invalid input"
       x-swagger-router-controller: "swagger_server.controllers.playground_controller"
+  /playgrounds/images/datasets/{source}/categories/counts:
+    get:
+      tags:
+      - "playground"
+      summary: "Query to search category counts"
+      description: ""
+      operationId: "get_images_dataset_categories_counts_by_category"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "source"
+        in: "path"
+        description: ""
+        required: true
+        type: "string"
+      - name: "category"
+        in: "query"
+        description: ""
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/GetImagesCategoriesCountsByCategoryResponse"
+        400:
+          description: "Invalid input"
+      x-swagger-router-controller: "swagger_server.controllers.playground_controller"
   /playgrounds/images/datasets/{source}:
     post:
       tags:
@@ -703,6 +731,13 @@ definitions:
         type: "string"
       data:
         $ref: "#/definitions/GetImagesByCategoryResponse_data"
+  GetImagesCategoriesCountsByCategoryResponse:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+      data:
+        $ref: "#/definitions/GetImagesCategoriesCountsByCategoryResponse_data"
   UpdateImageDatasetResponse:
     type: "object"
     properties:
@@ -736,6 +771,14 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/ImageDataset"
+  GetImagesCategoriesCountsByCategoryResponse_data:
+    properties:
+      total_count:
+        type: "string"
+      valid_count:
+        type: "string"
+      invalid_count:
+        type: "string"
 externalDocs:
   description: "Find out more about BlueLens"
   url: "http://bluelens.io"

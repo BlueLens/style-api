@@ -39,6 +39,21 @@ def get_images_dataset_by_category(source, category=None, offset=None, limit=Non
     """
     return Playgrounds.get_playground_images_by_category(source, category=category, offset=offset, limit=limit)
 
+
+def get_images_dataset_categories_counts_by_category(source, category=None):
+    """
+    Query to search category counts
+
+    :param source:
+    :type source: str
+    :param category:
+    :type category: str
+
+    :rtype: GetImagesCategoriesCountsByCategoryResponse
+    """
+    return Playgrounds.get_images_dataset_categories_counts_by_category(source, category=category)
+
+
 def get_playground_objects_by_user_image_file(file):
     """
     
