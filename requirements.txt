@@ -34,7 +34,7 @@ requests==2.18.4
 s3transfer==0.1.11
 six==1.11.0
 stylelens-dataset==0.0.29
-stylelens-detect==1.0.2
+stylelens-detect==1.0.4
 stylelens-feature==1.0.11
 stylelens-image==0.0.9
 stylelens-index==1.0.18
