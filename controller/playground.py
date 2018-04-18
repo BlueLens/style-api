@@ -231,6 +231,9 @@ class Playground:
       box_object.class_name = object.class_name
       box_object.class_code = object.class_code
       box_object.score = object.score
+      box_object.color_code = "red"#  TODO: change to object.color_code
+      box_object.color_score = 0.314  # TODO: change to object.color_score
+
 
       if best_score_index < object.score:
         best_score_index = object.score

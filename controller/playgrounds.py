@@ -125,6 +125,7 @@ class Playgrounds(object):
       boxes = search.get_objects_by_image_id(image_id)
       res_data.image_id = image_id
       res_data.boxes = boxes
+
       res.message = "Successful"
       res.data = res_data
       response_status = 200

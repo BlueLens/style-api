@@ -512,6 +512,53 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/SimImage"
+    example:
+      host_url: "host_url"
+      main_image_mobile_thumb: "main_image_mobile_thumb"
+      images:
+      - host_url: "host_url"
+        main_image_mobile_thumb: "main_image_mobile_thumb"
+        product_url: "product_url"
+        nation: "nation"
+        currency_unit: "currency_unit"
+        product_name: "product_name"
+        product_no: "product_no"
+        main_image_mobile_full: "main_image_mobile_full"
+        version: "version"
+        host_code: "host_code"
+        price: 6
+        product_id: "product_id"
+        id: "id"
+        host_name: "host_name"
+        class_code: ""
+      - host_url: "host_url"
+        main_image_mobile_thumb: "main_image_mobile_thumb"
+        product_url: "product_url"
+        nation: "nation"
+        currency_unit: "currency_unit"
+        product_name: "product_name"
+        product_no: "product_no"
+        main_image_mobile_full: "main_image_mobile_full"
+        version: "version"
+        host_code: "host_code"
+        price: 6
+        product_id: "product_id"
+        id: "id"
+        host_name: "host_name"
+        class_code: ""
+      product_url: "product_url"
+      nation: "nation"
+      currency_unit: "currency_unit"
+      product_name: "product_name"
+      product_no: "product_no"
+      main_image_mobile_full: "main_image_mobile_full"
+      version: "version"
+      host_code: "host_code"
+      price: 0
+      product_id: "product_id"
+      id: "id"
+      host_name: "host_name"
+      class_code: ""
   SimImage:
     type: "object"
     properties:
@@ -549,6 +596,22 @@ definitions:
         description: "Mobile thumbnail size of image url"
       version:
         type: "string"
+    example:
+      host_url: "host_url"
+      main_image_mobile_thumb: "main_image_mobile_thumb"
+      product_url: "product_url"
+      nation: "nation"
+      currency_unit: "currency_unit"
+      product_name: "product_name"
+      product_no: "product_no"
+      main_image_mobile_full: "main_image_mobile_full"
+      version: "version"
+      host_code: "host_code"
+      price: 6
+      product_id: "product_id"
+      id: "id"
+      host_name: "host_name"
+      class_code: ""
   SimpleImage:
     type: "object"
     properties:
@@ -592,6 +655,26 @@ definitions:
         description: "Mobile thumbnail size of image url"
       version:
         type: "string"
+    example:
+      cate:
+      - "cate"
+      - "cate"
+      host_url: "host_url"
+      main_image_mobile_thumb: "main_image_mobile_thumb"
+      product_url: "product_url"
+      nation: "nation"
+      currency_unit: "currency_unit"
+      product_no: "product_no"
+      main_image_mobile_full: "main_image_mobile_full"
+      version: "version"
+      tags: "tags"
+      host_code: "host_code"
+      price: 0
+      product_id: "product_id"
+      name: "name"
+      id: "id"
+      host_name: "host_name"
+      class_code: ""
   BoxDataset:
     type: "object"
     properties:
@@ -607,6 +690,11 @@ definitions:
       y2:
         type: "number"
         format: "float"
+    example:
+      y1: 6.0274563
+      x1: 0.8008282
+      y2: 5.962134
+      x2: 1.4658129
   ImageDataset:
     type: "object"
     properties:
@@ -630,6 +718,20 @@ definitions:
         type: "string"
       url_with_box:
         type: "string"
+    example:
+      category_class: "category_class"
+      category_name: "category_name"
+      bbox:
+        y1: 6.0274563
+        x1: 0.8008282
+        y2: 5.962134
+        x2: 1.4658129
+      width: 2
+      url_with_box: "url_with_box"
+      id: "id"
+      source: "source"
+      url: "url"
+      height: 5
   ImagesArray:
     type: "array"
     items:
@@ -649,6 +751,11 @@ definitions:
       bottom:
         type: "number"
         format: "float"
+    example:
+      top: 1.4658129
+      left: 0.8008282
+      bottom: 5.962134
+      right: 6.0274563
   BoxesArray:
     type: "array"
     items:
@@ -666,9 +773,27 @@ definitions:
         type: "string"
       class_code:
         type: "string"
+      color_code:
+        type: "string"
+      color_score:
+        type: "number"
+        format: "float"
       score:
         type: "number"
         format: "float"
+    example:
+      score: 2.302136
+      color_score: 5.637377
+      box:
+        top: 1.4658129
+        left: 0.8008282
+        bottom: 5.962134
+        right: 6.0274563
+      id: "id"
+      version_id: "version_id"
+      image_id: "image_id"
+      class_code: "class_code"
+      color_code: "color_code"
   GetImageResponse:
     type: "object"
     properties:
@@ -676,6 +801,55 @@ definitions:
         type: "string"
       data:
         $ref: "#/definitions/Image"
+    example:
+      data:
+        host_url: "host_url"
+        main_image_mobile_thumb: "main_image_mobile_thumb"
+        images:
+        - host_url: "host_url"
+          main_image_mobile_thumb: "main_image_mobile_thumb"
+          product_url: "product_url"
+          nation: "nation"
+          currency_unit: "currency_unit"
+          product_name: "product_name"
+          product_no: "product_no"
+          main_image_mobile_full: "main_image_mobile_full"
+          version: "version"
+          host_code: "host_code"
+          price: 6
+          product_id: "product_id"
+          id: "id"
+          host_name: "host_name"
+          class_code: ""
+        - host_url: "host_url"
+          main_image_mobile_thumb: "main_image_mobile_thumb"
+          product_url: "product_url"
+          nation: "nation"
+          currency_unit: "currency_unit"
+          product_name: "product_name"
+          product_no: "product_no"
+          main_image_mobile_full: "main_image_mobile_full"
+          version: "version"
+          host_code: "host_code"
+          price: 6
+          product_id: "product_id"
+          id: "id"
+          host_name: "host_name"
+          class_code: ""
+        product_url: "product_url"
+        nation: "nation"
+        currency_unit: "currency_unit"
+        product_name: "product_name"
+        product_no: "product_no"
+        main_image_mobile_full: "main_image_mobile_full"
+        version: "version"
+        host_code: "host_code"
+        price: 0
+        product_id: "product_id"
+        id: "id"
+        host_name: "host_name"
+        class_code: ""
+      message: "message"
   GetFeedResponse:
     type: "object"
     properties:
@@ -685,6 +859,101 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/Image"
+    example:
+      data:
+      - host_url: "host_url"
+        main_image_mobile_thumb: "main_image_mobile_thumb"
+        images:
+        - host_url: "host_url"
+          main_image_mobile_thumb: "main_image_mobile_thumb"
+          product_url: "product_url"
+          nation: "nation"
+          currency_unit: "currency_unit"
+          product_name: "product_name"
+          product_no: "product_no"
+          main_image_mobile_full: "main_image_mobile_full"
+          version: "version"
+          host_code: "host_code"
+          price: 6
+          product_id: "product_id"
+          id: "id"
+          host_name: "host_name"
+          class_code: ""
+        - host_url: "host_url"
+          main_image_mobile_thumb: "main_image_mobile_thumb"
+          product_url: "product_url"
+          nation: "nation"
+          currency_unit: "currency_unit"
+          product_name: "product_name"
+          product_no: "product_no"
+          main_image_mobile_full: "main_image_mobile_full"
+          version: "version"
+          host_code: "host_code"
+          price: 6
+          product_id: "product_id"
+          id: "id"
+          host_name: "host_name"
+          class_code: ""
+        product_url: "product_url"
+        nation: "nation"
+        currency_unit: "currency_unit"
+        product_name: "product_name"
+        product_no: "product_no"
+        main_image_mobile_full: "main_image_mobile_full"
+        version: "version"
+        host_code: "host_code"
+        price: 0
+        product_id: "product_id"
+        id: "id"
+        host_name: "host_name"
+        class_code: ""
+      - host_url: "host_url"
+        main_image_mobile_thumb: "main_image_mobile_thumb"
+        images:
+        - host_url: "host_url"
+          main_image_mobile_thumb: "main_image_mobile_thumb"
+          product_url: "product_url"
+          nation: "nation"
+          currency_unit: "currency_unit"
+          product_name: "product_name"
+          product_no: "product_no"
+          main_image_mobile_full: "main_image_mobile_full"
+          version: "version"
+          host_code: "host_code"
+          price: 6
+          product_id: "product_id"
+          id: "id"
+          host_name: "host_name"
+          class_code: ""
+        - host_url: "host_url"
+          main_image_mobile_thumb: "main_image_mobile_thumb"
+          product_url: "product_url"
+          nation: "nation"
+          currency_unit: "currency_unit"
+          product_name: "product_name"
+          product_no: "product_no"
+          main_image_mobile_full: "main_image_mobile_full"
+          version: "version"
+          host_code: "host_code"
+          price: 6
+          product_id: "product_id"
+          id: "id"
+          host_name: "host_name"
+          class_code: ""
+        product_url: "product_url"
+        nation: "nation"
+        currency_unit: "currency_unit"
+        product_name: "product_name"
+        product_no: "product_no"
+        main_image_mobile_full: "main_image_mobile_full"
+        version: "version"
+        host_code: "host_code"
+        price: 0
+        product_id: "product_id"
+        id: "id"
+        host_name: "host_name"
+        class_code: ""
+      message: "message"
   GetObjectsResponse:
     type: "object"
     properties:
@@ -692,6 +961,66 @@ definitions:
         type: "string"
       data:
         $ref: "#/definitions/GetObjectsResponse_data"
+    example:
+      data:
+        boxes:
+        - score: 2.302136
+          color_score: 5.637377
+          box:
+            top: 1.4658129
+            left: 0.8008282
+            bottom: 5.962134
+            right: 6.0274563
+          id: "id"
+          version_id: "version_id"
+          image_id: "image_id"
+          class_code: "class_code"
+          color_code: "color_code"
+        - score: 2.302136
+          color_score: 5.637377
+          box:
+            top: 1.4658129
+            left: 0.8008282
+            bottom: 5.962134
+            right: 6.0274563
+          id: "id"
+          version_id: "version_id"
+          image_id: "image_id"
+          class_code: "class_code"
+          color_code: "color_code"
+        images:
+        - host_url: "host_url"
+          main_image_mobile_thumb: "main_image_mobile_thumb"
+          product_url: "product_url"
+          nation: "nation"
+          currency_unit: "currency_unit"
+          product_name: "product_name"
+          product_no: "product_no"
+          main_image_mobile_full: "main_image_mobile_full"
+          version: "version"
+          host_code: "host_code"
+          price: 6
+          product_id: "product_id"
+          id: "id"
+          host_name: "host_name"
+          class_code: ""
+        - host_url: "host_url"
+          main_image_mobile_thumb: "main_image_mobile_thumb"
+          product_url: "product_url"
+          nation: "nation"
+          currency_unit: "currency_unit"
+          product_name: "product_name"
+          product_no: "product_no"
+          main_image_mobile_full: "main_image_mobile_full"
+          version: "version"
+          host_code: "host_code"
+          price: 6
+          product_id: "product_id"
+          id: "id"
+          host_name: "host_name"
+          class_code: ""
+        image_id: "image_id"
+      message: "message"
   GetObjectsByImageIdResponse:
     type: "object"
     properties:
@@ -699,6 +1028,66 @@ definitions:
         type: "string"
       data:
         $ref: "#/definitions/GetObjectsResponse_data"
+    example:
+      data:
+        boxes:
+        - score: 2.302136
+          color_score: 5.637377
+          box:
+            top: 1.4658129
+            left: 0.8008282
+            bottom: 5.962134
+            right: 6.0274563
+          id: "id"
+          version_id: "version_id"
+          image_id: "image_id"
+          class_code: "class_code"
+          color_code: "color_code"
+        - score: 2.302136
+          color_score: 5.637377
+          box:
+            top: 1.4658129
+            left: 0.8008282
+            bottom: 5.962134
+            right: 6.0274563
+          id: "id"
+          version_id: "version_id"
+          image_id: "image_id"
+          class_code: "class_code"
+          color_code: "color_code"
+        images:
+        - host_url: "host_url"
+          main_image_mobile_thumb: "main_image_mobile_thumb"
+          product_url: "product_url"
+          nation: "nation"
+          currency_unit: "currency_unit"
+          product_name: "product_name"
+          product_no: "product_no"
+          main_image_mobile_full: "main_image_mobile_full"
+          version: "version"
+          host_code: "host_code"
+          price: 6
+          product_id: "product_id"
+          id: "id"
+          host_name: "host_name"
+          class_code: ""
+        - host_url: "host_url"
+          main_image_mobile_thumb: "main_image_mobile_thumb"
+          product_url: "product_url"
+          nation: "nation"
+          currency_unit: "currency_unit"
+          product_name: "product_name"
+          product_no: "product_no"
+          main_image_mobile_full: "main_image_mobile_full"
+          version: "version"
+          host_code: "host_code"
+          price: 6
+          product_id: "product_id"
+          id: "id"
+          host_name: "host_name"
+          class_code: ""
+        image_id: "image_id"
+      message: "message"
   SearchImageResponse:
     type: "object"
     properties:
@@ -717,6 +1106,101 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/Image"
+    example:
+      data:
+      - host_url: "host_url"
+        main_image_mobile_thumb: "main_image_mobile_thumb"
+        images:
+        - host_url: "host_url"
+          main_image_mobile_thumb: "main_image_mobile_thumb"
+          product_url: "product_url"
+          nation: "nation"
+          currency_unit: "currency_unit"
+          product_name: "product_name"
+          product_no: "product_no"
+          main_image_mobile_full: "main_image_mobile_full"
+          version: "version"
+          host_code: "host_code"
+          price: 6
+          product_id: "product_id"
+          id: "id"
+          host_name: "host_name"
+          class_code: ""
+        - host_url: "host_url"
+          main_image_mobile_thumb: "main_image_mobile_thumb"
+          product_url: "product_url"
+          nation: "nation"
+          currency_unit: "currency_unit"
+          product_name: "product_name"
+          product_no: "product_no"
+          main_image_mobile_full: "main_image_mobile_full"
+          version: "version"
+          host_code: "host_code"
+          price: 6
+          product_id: "product_id"
+          id: "id"
+          host_name: "host_name"
+          class_code: ""
+        product_url: "product_url"
+        nation: "nation"
+        currency_unit: "currency_unit"
+        product_name: "product_name"
+        product_no: "product_no"
+        main_image_mobile_full: "main_image_mobile_full"
+        version: "version"
+        host_code: "host_code"
+        price: 0
+        product_id: "product_id"
+        id: "id"
+        host_name: "host_name"
+        class_code: ""
+      - host_url: "host_url"
+        main_image_mobile_thumb: "main_image_mobile_thumb"
+        images:
+        - host_url: "host_url"
+          main_image_mobile_thumb: "main_image_mobile_thumb"
+          product_url: "product_url"
+          nation: "nation"
+          currency_unit: "currency_unit"
+          product_name: "product_name"
+          product_no: "product_no"
+          main_image_mobile_full: "main_image_mobile_full"
+          version: "version"
+          host_code: "host_code"
+          price: 6
+          product_id: "product_id"
+          id: "id"
+          host_name: "host_name"
+          class_code: ""
+        - host_url: "host_url"
+          main_image_mobile_thumb: "main_image_mobile_thumb"
+          product_url: "product_url"
+          nation: "nation"
+          currency_unit: "currency_unit"
+          product_name: "product_name"
+          product_no: "product_no"
+          main_image_mobile_full: "main_image_mobile_full"
+          version: "version"
+          host_code: "host_code"
+          price: 6
+          product_id: "product_id"
+          id: "id"
+          host_name: "host_name"
+          class_code: ""
+        product_url: "product_url"
+        nation: "nation"
+        currency_unit: "currency_unit"
+        product_name: "product_name"
+        product_no: "product_no"
+        main_image_mobile_full: "main_image_mobile_full"
+        version: "version"
+        host_code: "host_code"
+        price: 0
+        product_id: "product_id"
+        id: "id"
+        host_name: "host_name"
+        class_code: ""
+      message: "message"
   GetImagesByKeywordResponse:
     type: "object"
     properties:
@@ -724,6 +1208,49 @@ definitions:
         type: "string"
       data:
         $ref: "#/definitions/GetImagesByKeywordResponse_data"
+    example:
+      data:
+        images:
+        - cate:
+          - "cate"
+          - "cate"
+          host_url: "host_url"
+          main_image_mobile_thumb: "main_image_mobile_thumb"
+          product_url: "product_url"
+          nation: "nation"
+          currency_unit: "currency_unit"
+          product_no: "product_no"
+          main_image_mobile_full: "main_image_mobile_full"
+          version: "version"
+          tags: "tags"
+          host_code: "host_code"
+          price: 0
+          product_id: "product_id"
+          name: "name"
+          id: "id"
+          host_name: "host_name"
+          class_code: ""
+        - cate:
+          - "cate"
+          - "cate"
+          host_url: "host_url"
+          main_image_mobile_thumb: "main_image_mobile_thumb"
+          product_url: "product_url"
+          nation: "nation"
+          currency_unit: "currency_unit"
+          product_no: "product_no"
+          main_image_mobile_full: "main_image_mobile_full"
+          version: "version"
+          tags: "tags"
+          host_code: "host_code"
+          price: 0
+          product_id: "product_id"
+          name: "name"
+          id: "id"
+          host_name: "host_name"
+          class_code: ""
+        total_count: "total_count"
+      message: "message"
   GetImagesByCategoryResponse:
     type: "object"
     properties:
@@ -731,6 +1258,37 @@ definitions:
         type: "string"
       data:
         $ref: "#/definitions/GetImagesByCategoryResponse_data"
+    example:
+      data:
+        images:
+        - category_class: "category_class"
+          category_name: "category_name"
+          bbox:
+            y1: 6.0274563
+            x1: 0.8008282
+            y2: 5.962134
+            x2: 1.4658129
+          width: 2
+          url_with_box: "url_with_box"
+          id: "id"
+          source: "source"
+          url: "url"
+          height: 5
+        - category_class: "category_class"
+          category_name: "category_name"
+          bbox:
+            y1: 6.0274563
+            x1: 0.8008282
+            y2: 5.962134
+            x2: 1.4658129
+          width: 2
+          url_with_box: "url_with_box"
+          id: "id"
+          source: "source"
+          url: "url"
+          height: 5
+        total_count: "total_count"
+      message: "message"
   GetImagesCategoriesCountsByCategoryResponse:
     type: "object"
     properties:
@@ -738,11 +1296,19 @@ definitions:
         type: "string"
       data:
         $ref: "#/definitions/GetImagesCategoriesCountsByCategoryResponse_data"
+    example:
+      data:
+        total_count: "total_count"
+        valid_count: "valid_count"
+        invalid_count: "invalid_count"
+      message: "message"
   UpdateImageDatasetResponse:
     type: "object"
     properties:
       message:
         type: "string"
+    example:
+      message: "message"
   GetObjectsResponse_data:
     properties:
       boxes:
@@ -755,6 +1321,64 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/SimImage"
+    example:
+      boxes:
+      - score: 2.302136
+        color_score: 5.637377
+        box:
+          top: 1.4658129
+          left: 0.8008282
+          bottom: 5.962134
+          right: 6.0274563
+        id: "id"
+        version_id: "version_id"
+        image_id: "image_id"
+        class_code: "class_code"
+        color_code: "color_code"
+      - score: 2.302136
+        color_score: 5.637377
+        box:
+          top: 1.4658129
+          left: 0.8008282
+          bottom: 5.962134
+          right: 6.0274563
+        id: "id"
+        version_id: "version_id"
+        image_id: "image_id"
+        class_code: "class_code"
+        color_code: "color_code"
+      images:
+      - host_url: "host_url"
+        main_image_mobile_thumb: "main_image_mobile_thumb"
+        product_url: "product_url"
+        nation: "nation"
+        currency_unit: "currency_unit"
+        product_name: "product_name"
+        product_no: "product_no"
+        main_image_mobile_full: "main_image_mobile_full"
+        version: "version"
+        host_code: "host_code"
+        price: 6
+        product_id: "product_id"
+        id: "id"
+        host_name: "host_name"
+        class_code: ""
+      - host_url: "host_url"
+        main_image_mobile_thumb: "main_image_mobile_thumb"
+        product_url: "product_url"
+        nation: "nation"
+        currency_unit: "currency_unit"
+        product_name: "product_name"
+        product_no: "product_no"
+        main_image_mobile_full: "main_image_mobile_full"
+        version: "version"
+        host_code: "host_code"
+        price: 6
+        product_id: "product_id"
+        id: "id"
+        host_name: "host_name"
+        class_code: ""
+      image_id: "image_id"
   GetImagesByKeywordResponse_data:
     properties:
       total_count:
@@ -763,6 +1387,47 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/SimpleImage"
+    example:
+      images:
+      - cate:
+        - "cate"
+        - "cate"
+        host_url: "host_url"
+        main_image_mobile_thumb: "main_image_mobile_thumb"
+        product_url: "product_url"
+        nation: "nation"
+        currency_unit: "currency_unit"
+        product_no: "product_no"
+        main_image_mobile_full: "main_image_mobile_full"
+        version: "version"
+        tags: "tags"
+        host_code: "host_code"
+        price: 0
+        product_id: "product_id"
+        name: "name"
+        id: "id"
+        host_name: "host_name"
+        class_code: ""
+      - cate:
+        - "cate"
+        - "cate"
+        host_url: "host_url"
+        main_image_mobile_thumb: "main_image_mobile_thumb"
+        product_url: "product_url"
+        nation: "nation"
+        currency_unit: "currency_unit"
+        product_no: "product_no"
+        main_image_mobile_full: "main_image_mobile_full"
+        version: "version"
+        tags: "tags"
+        host_code: "host_code"
+        price: 0
+        product_id: "product_id"
+        name: "name"
+        id: "id"
+        host_name: "host_name"
+        class_code: ""
+      total_count: "total_count"
   GetImagesByCategoryResponse_data:
     properties:
       total_count:
@@ -771,6 +1436,35 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/ImageDataset"
+    example:
+      images:
+      - category_class: "category_class"
+        category_name: "category_name"
+        bbox:
+          y1: 6.0274563
+          x1: 0.8008282
+          y2: 5.962134
+          x2: 1.4658129
+        width: 2
+        url_with_box: "url_with_box"
+        id: "id"
+        source: "source"
+        url: "url"
+        height: 5
+      - category_class: "category_class"
+        category_name: "category_name"
+        bbox:
+          y1: 6.0274563
+          x1: 0.8008282
+          y2: 5.962134
+          x2: 1.4658129
+        width: 2
+        url_with_box: "url_with_box"
+        id: "id"
+        source: "source"
+        url: "url"
+        height: 5
+      total_count: "total_count"
   GetImagesCategoriesCountsByCategoryResponse_data:
     properties:
       total_count:
@@ -779,6 +1473,10 @@ definitions:
         type: "string"
       invalid_count:
         type: "string"
+    example:
+      total_count: "total_count"
+      valid_count: "valid_count"
+      invalid_count: "invalid_count"
 externalDocs:
   description: "Find out more about BlueLens"
   url: "http://bluelens.io"

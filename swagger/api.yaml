@@ -673,6 +673,11 @@ definitions:
         type: string
       class_code:
         type: string
+      color_code:
+        type: "string"
+      color_score:
+        type: "number"
+        format: "float"
       score:
         type: number
         format: float
