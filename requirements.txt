@@ -43,5 +43,5 @@ stylelens-product==1.0.81
 stylelens-search-vector==1.0.10
 stylelens-user==0.0.4
 swagger-spec-validator==2.1.0
-urllib3==1.22
+urllib3==1.26.5
 Werkzeug==0.14.1
