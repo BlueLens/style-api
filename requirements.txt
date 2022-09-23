@@ -25,7 +25,7 @@ MarkupSafe==1.0
 numpy==1.14.0
 olefile==0.44
 Pillow==4.3.0
-protobuf==3.5.1
+protobuf==3.18.3
 pymongo==3.6.0
 python-dateutil==2.6.1
 PyYAML==3.12
